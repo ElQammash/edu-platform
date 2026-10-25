@@ -162,6 +162,9 @@ return [
         'parent_phone' => [
             'regex' => 'يجب أن يكون :attribute رقم موبايل مصري صحيح (مثال: 01012345678).',
         ],
+        'video_url' => [
+            'supported' => 'يجب أن يكون :attribute رابط من Bunny Stream أو YouTube أو Vimeo.',
+        ],
     ],
     'attributes' => [
         'grade_level' => 'المرحلة الدراسية',

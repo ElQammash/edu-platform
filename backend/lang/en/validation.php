@@ -184,6 +184,9 @@ return [
         'parent_phone' => [
             'regex' => 'The :attribute must be a valid Egyptian mobile number (e.g. 01012345678).',
         ],
+        'video_url' => [
+            'supported' => 'The :attribute must be a Bunny Stream, YouTube or Vimeo link.',
+        ],
     ],
 
     /*
