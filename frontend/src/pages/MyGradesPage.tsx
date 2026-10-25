@@ -31,7 +31,9 @@ export default function MyGradesPage() {
         courses.map((course) => <CourseGradeCard key={course.course.id} grades={course} />)
       )}
 
-      <p className="text-xs text-muted-foreground">{t('grades.rules')}</p>
+      <p className="text-xs text-muted-foreground">
+        {t('grades.rules')} {t('grades.attendance.note')}
+      </p>
     </div>
   )
 }
@@ -53,6 +55,20 @@ function CourseGradeCard({ grades }: { grades: CourseGrades }) {
             <Progress value={(grades.done / grades.total) * 100} />
             <p className="text-xs text-muted-foreground">
               {t('grades.done', { done: format.number(grades.done), total: format.number(grades.total) })}
+            </p>
+          </div>
+        )}
+        {grades.attendance.held > 0 && (
+          <div className="text-end">
+            <p className="text-xs text-muted-foreground">{t('grades.attendance.title')}</p>
+            <p className="text-lg font-semibold" dir="ltr">
+              {format.number(grades.attendance.percent ?? 0)}%
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t('grades.attendance.summary', {
+                attended: format.number(grades.attendance.attended),
+                held: format.number(grades.attendance.held),
+              })}
             </p>
           </div>
         )}
