@@ -19,6 +19,8 @@ export interface User {
   name: string
   email: string
   roles: Role[]
+  /** Saved interface language; null until chosen. */
+  locale: 'ar' | 'en' | null
   student_profile?: StudentProfile | null
   teacher_profile?: TeacherProfile | null
   created_at: string | null

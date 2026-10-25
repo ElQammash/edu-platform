@@ -37,6 +37,8 @@ export interface LessonSummary {
   duration_seconds: number | null
   is_free_preview: boolean
   order: number
+  /** Live lessons only. */
+  live_at?: string | null
   /** Present when the signed-in student's progress was loaded. */
   is_completed?: boolean
 }
@@ -86,6 +88,8 @@ export interface Lesson {
   video: { provider: VideoProvider; video_id: string; embed_url: string } | null
   duration_seconds: number | null
   is_free_preview: boolean
+  /** Live lessons: schedule and state. Never the meeting link (POST /join returns it). */
+  live: LiveInfo | null
   section: { id: number; title: string }
   course: { id: number; slug: string; title: string }
   /** Present when the viewer can open it (not for free-preview visitors). */
@@ -104,4 +108,26 @@ export interface CourseFilters {
   price?: 'free' | 'paid'
   teacher?: number
   page?: number
+}
+
+export type LiveState = 'upcoming' | 'live' | 'ended'
+
+export interface LiveInfo {
+  starts_at: string
+  ends_at: string
+  join_opens_at: string
+  state: LiveState
+  can_join: boolean
+  has_recording: boolean
+  server_time: string
+}
+
+export interface LiveSession {
+  lesson: { id: number; title: string }
+  course: { id: number; slug: string; title: string }
+  starts_at: string
+  ends_at: string
+  state: LiveState
+  can_join: boolean
+  calendar_url: string
 }

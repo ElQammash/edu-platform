@@ -60,6 +60,19 @@ export interface QuizGradedData {
   regraded: boolean
 }
 
+export interface LiveLessonNotificationData {
+  lesson_id: number
+  lesson_title: string
+  course_id: number
+  course_slug: string
+  course_title: string
+  starts_at: string | null
+  /** Reminders: 24h or 1h before. */
+  kind?: '24h' | '1h'
+  /** Reschedules: the old start time. */
+  previous_starts_at?: string | null
+}
+
 interface NotificationBase {
   id: string
   read_at: string | null
@@ -69,3 +82,7 @@ interface NotificationBase {
 export type AppNotification =
   | (NotificationBase & { type: 'submission_graded'; data: SubmissionGradedData })
   | (NotificationBase & { type: 'quiz_graded'; data: QuizGradedData })
+  | (NotificationBase & {
+      type: 'live_lesson_reminder' | 'live_lesson_rescheduled' | 'live_lesson_cancelled'
+      data: LiveLessonNotificationData
+    })

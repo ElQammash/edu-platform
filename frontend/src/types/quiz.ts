@@ -102,4 +102,6 @@ export interface CourseGrades {
   done: number
   total: number
   lessons: LessonGrade[]
+  /** Live sessions held so far and attended; shown next to the grades, not part of them. */
+  attendance: { attended: number; held: number; percent: number | null }
 }
