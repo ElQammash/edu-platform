@@ -22,7 +22,9 @@ return new class extends Migration
             $table->string('file_mime', 100)->nullable();
             $table->unsignedInteger('file_size')->nullable();
             // Last time the student submitted or edited; "late" is derived from it and due_at.
-            $table->timestamp('submitted_at');
+            // dateTime, not timestamp: MySQL/MariaDB may add ON UPDATE CURRENT_TIMESTAMP to the
+            // first NOT NULL timestamp column, which would reset it whenever the row is graded.
+            $table->dateTime('submitted_at');
             $table->decimal('score', 6, 2)->nullable();
             $table->text('feedback')->nullable();
             $table->foreignId('graded_by')->nullable()->constrained('users')->nullOnDelete();
