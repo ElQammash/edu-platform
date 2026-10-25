@@ -17,5 +17,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
         ]);
+
+        if (! app()->isProduction()) {
+            $this->call([
+                DemoUserSeeder::class,
+            ]);
+        }
     }
 }
