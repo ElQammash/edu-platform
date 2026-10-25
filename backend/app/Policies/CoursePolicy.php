@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Course;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 /**
  * Admins manage every course; teachers manage only their own.
@@ -44,9 +45,15 @@ class CoursePolicy
      * Whether the user may enroll themselves. Paid courses are enrolled by
      * the admin (manual payment) until online payments exist.
      */
-    public function enroll(User $user, Course $course): bool
+    public function enroll(User $user, Course $course): Response
     {
-        return $user->isStudent() && $course->isPublished() && $course->isFree();
+        if (! $user->isStudent() || ! $course->isPublished()) {
+            return Response::deny();
+        }
+
+        return $course->isFree()
+            ? Response::allow()
+            : Response::deny(__('enrollments.paid_course'));
     }
 
     /**

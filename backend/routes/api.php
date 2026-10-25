@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CourseController;
+use App\Http\Controllers\Api\V1\EnrollmentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,4 +31,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // Public catalog
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('courses/{course}/enroll', [EnrollmentController::class, 'store'])->name('courses.enroll');
+        Route::get('me/courses', [EnrollmentController::class, 'index'])->name('me.courses');
+    });
 });
