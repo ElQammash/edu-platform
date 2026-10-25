@@ -121,8 +121,30 @@ edu-platform/
   - public teacher profiles
 - Teacher-written text is Markdown, rendered without raw HTML (no script injection); mixed Arabic/English text uses `dir="auto"`
 
+### Phase 3: assignments, submissions and grading ✅
+- **Assignments:** each lesson can have one, added from the lesson form in the panels, with Markdown instructions, an optional due date and a max score
+- **Submissions:**
+  - text and/or one file (PDF, JPG, PNG or WebP, up to 10 MB, checked by real content type);
+  - one per student per assignment, editable until it is graded;
+  - accepted after the deadline but flagged **late**. The flag is computed, so extending a deadline clears it
+- **Private files:**
+  - stored in `storage/app/private`, never under `public/`;
+  - shown only to the student, the course teacher and admins: panels use the session, the React app gets a 30-minute signed link
+- **Grading:**
+  - the teacher panel's **Grading** page is a queue of pending submissions across all the teacher's courses (oldest first, late badge, count in the sidebar);
+  - the grading window shows the answer and file, and takes a score (up to the max) and feedback;
+  - re-grading is allowed;
+  - admins can grade everything
+- **Notifications:**
+  - students get an in-app notification when their work is graded or re-graded: a bell with an unread count in the React app;
+  - notifications store data, not text, so they read in each user's language
+- **Arabic panels:**
+  - both Filament panels switch between Arabic (RTL) and English from the user menu or the login page;
+  - the choice is saved on the account (`users.locale`);
+  - the strings Filament's own Arabic was missing are added in `lang/vendor`
+- **Teacher profile:** at `/teacher/profile`, teachers edit their name, password, specialty, bio and photo
+
 ### Roadmap
-3. Assignments, submissions, teacher grading
 4. Quizzes, auto-grading + manual essay grading, lesson and course grades, quiz timer
 5. Live lessons, attendance, reminder notifications via queues
 6. Lesson comments (Q&A), reviews
@@ -150,6 +172,8 @@ php artisan serve --host=localhost --port=8000
 ```
 
 `composer setup` runs the install, env, key and migrate steps in one go.
+
+Updating an existing install after a pull: `composer install && php artisan migrate`. Phase 3 includes a migration that stops MySQL/MariaDB from resetting `enrollments.enrolled_at`. Run `php artisan migrate:fresh --seed` to get the newest demo data.
 
 Set the academy's WhatsApp number (international format, e.g. `201012345678`) in **Admin → Academy settings**, or as `ACADEMY_WHATSAPP_NUMBER` in `backend/.env`. Until it is set, paid courses say contact details are coming soon.
 
@@ -192,7 +216,18 @@ cd frontend && npm run lint && npm run build
 | Algebra Foundations | Mona | English | Free | student1 |
 | الهندسة الفراغية (draft) | Mona | Arabic | 300 EGP | not visible to students |
 
-Each course has two sections of video and text lessons, and its first lesson is a free preview. The videos are Blender open movies standing in for real lessons. Use student4 or student5 to try enrolling from scratch. Sample assignments and quizzes arrive with phases 3 and 4.
+Each course has two sections of video and text lessons, and its first lesson is a free preview. The videos are Blender open movies standing in for real lessons. Use student4 or student5 to try enrolling from scratch.
+
+### Demo assignments
+
+| Assignment | Lesson (course) | Deadline | Submissions |
+| --- | --- | --- | --- |
+| مسائل على قانون أوم (/20) | قانون أوم (Physics) | passed | student1: **graded 18/20** with a PDF (so student1 has a notification); student3: **late**, waiting |
+| تقرير عن قاعدة اليد اليمنى (/10) | المجال المغناطيسي لسلك مستقيم (Physics) | in 5 days | student1: waiting |
+| تمارين على قواعد الاشتقاق (/50) | قواعد الاشتقاق (Calculus) | in a week | student2: waiting, with a PDF |
+| Solve five linear equations (/25) | Linear equations (Algebra) | none | none: try submitting as student1 |
+
+Sign in to `/teacher` as teacher1 to see the grading queue. Sample quizzes arrive with phase 4.
 
 ## API (v1)
 
@@ -216,6 +251,12 @@ All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-
 | GET | `/api/v1/me/profile` | user | The current user's profile |
 | POST | `/api/v1/me/profile` | student | Update `name`, `grade_level`, `parent_phone`, `avatar` (multipart), `remove_avatar` |
 | GET | `/api/v1/teachers/{id}` | — | Public profile of an approved teacher with their published courses |
+| GET | `/api/v1/assignments/{id}` | enrolled student, teacher, admin | Instructions, deadline, max score and the student's own submission (`file.url` is a 30-minute signed link) |
+| POST | `/api/v1/assignments/{id}/submission` | enrolled student | Create or update the submission (multipart: `content`, `file`, `remove_file`); 403 once graded |
+| GET | `/api/v1/submissions/{id}/file` | student, course teacher, admin | The submission file (token/session clients) |
+| GET | `/api/v1/me/notifications` | user | Latest 20 notifications plus `meta.unread_count` |
+| POST | `/api/v1/me/notifications/{id}/read` | user | Mark one as read |
+| POST | `/api/v1/me/notifications/read-all` | user | Mark all as read |
 
 ## Git conventions
 
