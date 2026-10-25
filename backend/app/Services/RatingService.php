@@ -17,10 +17,15 @@ class RatingService
     {
         $reviews = Review::query()->visible()->where('course_id', $course->id);
 
-        $course->forceFill([
+        $cached = [
             'rating_avg' => round((float) $reviews->avg('rating'), 2),
             'reviews_count' => $reviews->count(),
-        ])->saveQuietly();
+        ];
+
+        // A query update, not save(): the model may be a stale copy on which
+        // the new values look unchanged, so save() would skip them.
+        Course::query()->whereKey($course->id)->update($cached);
+        $course->forceFill($cached)->syncOriginal();
 
         $teacherAverage = Review::query()
             ->visible()
