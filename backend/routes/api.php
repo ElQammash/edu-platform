@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\GradesController;
+use App\Http\Controllers\Api\V1\LessonCommentController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
 use App\Http\Controllers\Api\V1\LiveSessionController;
@@ -83,7 +84,20 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->name('lessons.join');
         Route::get('me/live-sessions', [LiveSessionController::class, 'upcoming'])->name('me.live-sessions');
 
-        Route::get('me/notifications', [NotificationController::class, 'index'])->name('me.notifications');
+        Route::get('lessons/{lesson}/comments', [LessonCommentController::class, 'index'])->name('lessons.comments');
+        Route::middleware('throttle:10,1')->group(function () {
+            Route::post('lessons/{lesson}/comments', [LessonCommentController::class, 'store'])->name('lessons.comments.store');
+            Route::post('comments/{comment}/replies', [LessonCommentController::class, 'reply'])->name('comments.reply');
+        });
+        Route::middleware('throttle:30,1')->group(function () {
+            Route::patch('comments/{comment}', [LessonCommentController::class, 'update'])->name('comments.update');
+            Route::delete('comments/{comment}', [LessonCommentController::class, 'destroy'])->name('comments.destroy');
+            Route::post('comments/{comment}/resolve', [LessonCommentController::class, 'resolve'])->name('comments.resolve');
+            Route::post('comments/{comment}/reopen', [LessonCommentController::class, 'reopen'])->name('comments.reopen');
+            Route::post('comments/{comment}/accept', [LessonCommentController::class, 'accept'])->name('comments.accept');
+        });
+
+        Route::get('me/notifications',[NotificationController::class, 'index'])->name('me.notifications');
         Route::post('me/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('me.notifications.read-all');
         Route::post('me/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('me.notifications.read');
 

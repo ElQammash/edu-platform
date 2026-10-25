@@ -23,6 +23,7 @@ class LessonQaService
             $question = $lesson->comments()->create([
                 'user_id' => $student->id,
                 'body' => $body,
+                'by_staff' => false,
             ]);
 
             $lesson->course()->teacher->notify(new LessonQuestionAsked($question));
