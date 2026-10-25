@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-enum CourseType: string
+use Filament\Support\Contracts\HasLabel;
+
+enum CourseType: string implements HasLabel
 {
     case Recorded = 'recorded';
     case Live = 'live';
@@ -11,5 +13,10 @@ enum CourseType: string
     public function label(): string
     {
         return __('enums.course_type.'.$this->value);
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label();
     }
 }
