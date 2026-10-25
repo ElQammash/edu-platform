@@ -5,14 +5,16 @@ namespace App\Notifications;
 use App\Models\QuizAttempt;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
 use Illuminate\Notifications\Notification;
 
 /**
  * In-app notice that the teacher finished grading a quiz attempt's essays.
  * Fully auto-graded attempts show their score at once and need no notice.
- * Stored as data so each student reads it in their own language.
+ * Stored as data so each student reads it in their own language. Queued
+ * (after the transaction commits) and sent by the scheduled queue worker.
  */
-class QuizGraded extends Notification
+class QuizGraded extends Notification implements ShouldQueueAfterCommit
 {
     use Queueable;
 

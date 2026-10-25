@@ -5,15 +5,16 @@ namespace App\Notifications;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
 use Illuminate\Notifications\Notification;
 
 /**
  * In-app notice that a teacher graded (or re-graded) a submission.
  *
  * Stored as data, not text, so each student reads it in their own language.
- * Sent synchronously for now; it can move to a queue once workers run (phase 5).
+ * Queued (after the transaction commits) and sent by the scheduled queue worker.
  */
-class SubmissionGraded extends Notification
+class SubmissionGraded extends Notification implements ShouldQueueAfterCommit
 {
     use Queueable;
 

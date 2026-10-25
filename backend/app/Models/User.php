@@ -6,6 +6,7 @@ use App\Enums\Role;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,7 +34,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasLocalePreference
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
@@ -135,6 +136,15 @@ class User extends Authenticatable implements FilamentUser
     public function teaches(Course $course): bool
     {
         return $course->teacher_id === $this->id;
+    }
+
+    /**
+     * Language for emails and other notifications sent to this user: their
+     * saved choice, otherwise Arabic (the platform targets Egypt).
+     */
+    public function preferredLocale(): string
+    {
+        return $this->locale ?? 'ar';
     }
 
     /**
