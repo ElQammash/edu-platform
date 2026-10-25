@@ -41,6 +41,20 @@ class LessonFactory extends Factory
         ]);
     }
 
+    /**
+     * A live session starting at $startsAt (default: tomorrow) for an hour.
+     */
+    public function live(?\DateTimeInterface $startsAt = null, int $minutes = 60): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => LessonType::Live,
+            'video_url' => null,
+            'live_at' => $startsAt ?? now()->addDay(),
+            'duration_seconds' => $minutes * 60,
+            'meeting_url' => 'https://us02web.zoom.us/j/1234567890',
+        ]);
+    }
+
     public function freePreview(): static
     {
         return $this->state(fn (array $attributes) => [
