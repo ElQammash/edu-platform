@@ -31,9 +31,27 @@ class LessonPolicy
         return $user->isEnrolledIn($course);
     }
 
+    /**
+     * Staff list lessons inside a section they can reach (see SectionPolicy).
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin() || $user->isTeacher();
+    }
+
+    public function create(User $user): bool
+    {
+        return $user->isAdmin() || $user->isTeacher();
+    }
+
     public function update(User $user, Lesson $lesson): bool
     {
         return $user->isAdmin() || $user->teaches($lesson->course());
+    }
+
+    public function reorder(User $user): bool
+    {
+        return $this->create($user);
     }
 
     public function delete(User $user, Lesson $lesson): bool
