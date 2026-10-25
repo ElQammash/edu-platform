@@ -8,6 +8,102 @@
     "ar": "العربية",
     "en": "English"
   },
+  "format": {
+    "hours": "{{value}} ساعة",
+    "minutes": "{{value}} دقيقة"
+  },
+  "common": {
+    "loadFailed": "مقدرناش نحمل الصفحة دي.",
+    "retry": "حاول تاني",
+    "previous": "السابق",
+    "next": "التالي",
+    "pageOf": "صفحة {{page}} من {{total}}"
+  },
+  "courses": {
+    "free": "مجاني",
+    "language": { "ar": "العربية", "en": "الإنجليزية" },
+    "type": { "recorded": "مسجل", "live": "لايف", "hybrid": "مسجل + لايف" },
+    "card": {
+      "lessons": "{{value}} درس",
+      "by": "مع {{name}}"
+    },
+    "catalog": {
+      "subtitle": "كورسات مسجلة ولايف مع أفضل المدرسين في مصر.",
+      "searchPlaceholder": "ابحث عن كورس…",
+      "allLanguages": "كل اللغات",
+      "allTypes": "كل الأنواع",
+      "allPrices": "أي سعر",
+      "freeOnly": "مجاني",
+      "paidOnly": "مدفوع",
+      "results": "{{value}} كورس",
+      "empty": "مفيش كورسات بالفلاتر دي.",
+      "clearFilters": "مسح الفلاتر"
+    },
+    "details": {
+      "about": "عن الكورس",
+      "curriculum": "محتوى الكورس",
+      "lessons": "{{value}} درس",
+      "students": "{{value}} طالب",
+      "taughtIn": "الشرح باللغة {{language}}",
+      "freePreview": "معاينة مجانية",
+      "locked": "مقفول",
+      "completed": "اتشاف",
+      "aboutTeacher": "المدرس",
+      "viewTeacher": "الملف الشخصي",
+      "notFound": "الكورس غير موجود"
+    },
+    "enroll": {
+      "free": "اشترك مجاناً",
+      "enrolling": "جاري الاشتراك…",
+      "start": "ابدأ الكورس",
+      "continue": "كمل المذاكرة",
+      "progress": "خلصت {{value}}٪",
+      "loginToEnroll": "سجل دخول علشان تشترك",
+      "paidTitle": "الكورس ده مدفوع",
+      "paidHint": "كلمنا على واتساب علشان تدفع، وهنفعلك الاشتراك على طول.",
+      "contactWhatsApp": "كلمنا على واتساب",
+      "whatsappMessage": "السلام عليكم، عايز أشترك في كورس \"{{course}}\".",
+      "whatsappMessageWithEmail": "السلام عليكم، عايز أشترك في كورس \"{{course}}\". إيميل حسابي هو {{email}}.",
+      "noContact": "بيانات التواصل هتكون متاحة قريب.",
+      "staffOnly": "الاشتراك متاح لحسابات الطلاب بس."
+    }
+  },
+  "myCourses": {
+    "subtitle": "كمل من مكان ما وقفت.",
+    "empty": "لسه مشتركتش في أي كورس.",
+    "browse": "تصفح الكورسات"
+  },
+  "lessons": {
+    "backToCourse": "الرجوع للكورس",
+    "previous": "الدرس السابق",
+    "next": "الدرس التالي",
+    "markComplete": "علّم إنه اتشاف",
+    "marking": "جاري الحفظ…",
+    "completed": "اتشاف",
+    "autoCompleteHint": "دروس الفيديو بتتعلم تلقائي لما تشوف ٩٠٪ منها.",
+    "previewNotice": "انت بتشوف معاينة مجانية. اشترك علشان تفتح الكورس كله.",
+    "lockedTitle": "الدرس ده مقفول",
+    "lockedHint": "اشترك في الكورس علشان تفتح الدرس ده.",
+    "goToCourse": "روح لصفحة الكورس",
+    "notFound": "الدرس غير موجود",
+    "noVideo": "فيديو الدرس ده مش متاح."
+  },
+  "profile": {
+    "subtitle": "بيانات حسابك.",
+    "avatar": "الصورة الشخصية",
+    "changeAvatar": "غير الصورة",
+    "removeAvatar": "شيل الصورة",
+    "avatarHint": "JPG أو PNG أو WebP، لحد ٢ ميجا.",
+    "emailHint": "كلم الأكاديمية لو عايز تغير الإيميل.",
+    "save": "حفظ التعديلات",
+    "saving": "جاري الحفظ…",
+    "saved": "اتحفظ ملفك الشخصي."
+  },
+  "teachers": {
+    "courses": "كورسات {{name}}",
+    "noCourses": "مفيش كورسات منشورة لسه.",
+    "notFound": "المدرس غير موجود"
+  },
   "auth": {
     "fields": {
       "name": "الاسم بالكامل",
@@ -52,6 +148,7 @@
     "quiz": { "title": "الاختبار" },
     "myGrades": { "title": "درجاتي" },
     "profile": { "title": "الملف الشخصي" },
+    "teacher": { "title": "المدرس" },
     "login": { "title": "تسجيل الدخول" },
     "register": { "title": "إنشاء حساب" },
     "notFound": {

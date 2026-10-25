@@ -8,6 +8,102 @@
     "ar": "العربية",
     "en": "English"
   },
+  "format": {
+    "hours": "{{value}} h",
+    "minutes": "{{value}} min"
+  },
+  "common": {
+    "loadFailed": "We couldn't load this page.",
+    "retry": "Try again",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}"
+  },
+  "courses": {
+    "free": "Free",
+    "language": { "ar": "Arabic", "en": "English" },
+    "type": { "recorded": "Recorded", "live": "Live", "hybrid": "Recorded + live" },
+    "card": {
+      "lessons": "{{value}} lessons",
+      "by": "by {{name}}"
+    },
+    "catalog": {
+      "subtitle": "Recorded and live courses from Egypt's best teachers.",
+      "searchPlaceholder": "Search courses…",
+      "allLanguages": "All languages",
+      "allTypes": "All types",
+      "allPrices": "Any price",
+      "freeOnly": "Free",
+      "paidOnly": "Paid",
+      "results": "{{value}} courses",
+      "empty": "No courses match your filters.",
+      "clearFilters": "Clear filters"
+    },
+    "details": {
+      "about": "About this course",
+      "curriculum": "Course content",
+      "lessons": "{{value}} lessons",
+      "students": "{{value}} students",
+      "taughtIn": "Taught in {{language}}",
+      "freePreview": "Free preview",
+      "locked": "Locked",
+      "completed": "Completed",
+      "aboutTeacher": "Your teacher",
+      "viewTeacher": "View profile",
+      "notFound": "Course not found"
+    },
+    "enroll": {
+      "free": "Enroll for free",
+      "enrolling": "Enrolling…",
+      "start": "Start course",
+      "continue": "Continue learning",
+      "progress": "{{value}}% complete",
+      "loginToEnroll": "Log in to enroll",
+      "paidTitle": "This is a paid course",
+      "paidHint": "Contact us on WhatsApp to pay, and we'll enroll you right away.",
+      "contactWhatsApp": "Contact us on WhatsApp",
+      "whatsappMessage": "Hello, I'd like to enroll in the course \"{{course}}\".",
+      "whatsappMessageWithEmail": "Hello, I'd like to enroll in the course \"{{course}}\". My account email is {{email}}.",
+      "noContact": "Contact details will be available soon.",
+      "staffOnly": "Enrollment is for student accounts."
+    }
+  },
+  "myCourses": {
+    "subtitle": "Pick up where you left off.",
+    "empty": "You haven't enrolled in any course yet.",
+    "browse": "Browse courses"
+  },
+  "lessons": {
+    "backToCourse": "Back to course",
+    "previous": "Previous lesson",
+    "next": "Next lesson",
+    "markComplete": "Mark as complete",
+    "marking": "Saving…",
+    "completed": "Completed",
+    "autoCompleteHint": "Video lessons are completed automatically once you watch 90%.",
+    "previewNotice": "You're watching a free preview. Enroll to unlock the whole course.",
+    "lockedTitle": "This lesson is locked",
+    "lockedHint": "Enroll in the course to open this lesson.",
+    "goToCourse": "Go to the course page",
+    "notFound": "Lesson not found",
+    "noVideo": "The video for this lesson is unavailable."
+  },
+  "profile": {
+    "subtitle": "Your account details.",
+    "avatar": "Profile photo",
+    "changeAvatar": "Change photo",
+    "removeAvatar": "Remove photo",
+    "avatarHint": "JPG, PNG or WebP, up to 2 MB.",
+    "emailHint": "Contact the academy to change your email.",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "saved": "Your profile was saved."
+  },
+  "teachers": {
+    "courses": "Courses by {{name}}",
+    "noCourses": "No published courses yet.",
+    "notFound": "Teacher not found"
+  },
   "auth": {
     "fields": {
       "name": "Full name",
@@ -52,6 +148,7 @@
     "quiz": { "title": "Quiz" },
     "myGrades": { "title": "My grades" },
     "profile": { "title": "Profile" },
+    "teacher": { "title": "Teacher" },
     "login": { "title": "Log in" },
     "register": { "title": "Create an account" },
     "notFound": {
