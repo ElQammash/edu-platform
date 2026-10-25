@@ -159,6 +159,15 @@ class AuthTest extends TestCase
         $this->getJson(route('api.v1.auth.me'))->assertUnauthorized();
     }
 
+    public function test_guests_get_a_401_even_without_asking_for_json(): void
+    {
+        // e.g. a link opened in a new tab: no Accept: application/json header.
+        $this->withHeaders(['Accept' => 'text/html'])
+            ->get(route('api.v1.auth.me'))
+            ->assertUnauthorized()
+            ->assertJsonPath('message', 'Unauthenticated.');
+    }
+
     public function test_user_can_logout(): void
     {
         $user = User::factory()->student()->create(['password' => 'secret-password']);

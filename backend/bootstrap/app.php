@@ -21,6 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
             SetLocale::class,
             UseSanctumGuard::class,
         ]);
+
+        // There is no web login page outside the panels: API guests get a 401
+        // (rendered as JSON) instead of a redirect to a missing "login" route.
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('api/*') ? null : '/');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
