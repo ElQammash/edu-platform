@@ -17,7 +17,8 @@
     "retry": "حاول تاني",
     "previous": "السابق",
     "next": "التالي",
-    "pageOf": "صفحة {{page}} من {{total}}"
+    "pageOf": "صفحة {{page}} من {{total}}",
+    "cancel": "إلغاء"
   },
   "courses": {
     "free": "مجاني",
@@ -156,11 +157,11 @@
   "quizzes": {
     "inLesson": "الاختبار",
     "open": "افتح الاختبار",
-    "questions": "{{count}} سؤال",
+    "questions": "{{value}} سؤال",
     "timeLimit": "{{value}} دقيقة",
     "untimed": "من غير وقت",
     "due": "آخر ميعاد {{date}}",
-    "attemptsAllowed": "{{count}} محاولة",
+    "attemptsAllowed": "{{value}} محاولة",
     "passScore": "درجة النجاح {{value}}٪",
     "bestCounts": "أحسن محاولة ليك هي اللي بتتحسب.",
     "start": "ابدأ الاختبار",
@@ -186,12 +187,12 @@
     "saved": "كل الإجابات اتحفظت",
     "saveFailed": "معرفناش نحفظ. بنحاول تاني…",
     "answered": "جاوبت {{answered}} من {{total}}",
-    "points": "{{count}} درجة",
+    "points": "{{value}} درجة",
     "essayPlaceholder": "اكتب إجابتك…",
     "submit": "سلّم الاختبار",
     "submitting": "جاري التسليم…",
     "confirmSubmit": "تسلم دلوقتي؟ مش هتقدر تغير إجاباتك بعد كده.",
-    "unanswered": "في {{count}} سؤال لسه ماجاوبتش عليه.",
+    "unanswered": "في {{value}} سؤال لسه ماجاوبتش عليه.",
     "true": "صح",
     "false": "خطأ",
     "result": {

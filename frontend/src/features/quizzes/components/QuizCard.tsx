@@ -21,7 +21,7 @@ export function QuizCard({ quiz }: { quiz: QuizSummary }) {
           {quiz.title}
         </p>
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-          <span>{t('quizzes.questions', { count: quiz.questions_count })}</span>
+          <span>{t('quizzes.questions', { count: quiz.questions_count, value: format.number(quiz.questions_count) })}</span>
           <span className="flex items-center gap-1">
             <Timer className="size-4" />
             {quiz.time_limit_minutes ? t('quizzes.timeLimit', { value: format.number(quiz.time_limit_minutes) }) : t('quizzes.untimed')}
