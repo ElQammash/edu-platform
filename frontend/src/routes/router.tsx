@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router'
+import MainLayout from '@/layouts/MainLayout'
 import AssignmentPage from '@/pages/AssignmentPage'
 import CatalogPage from '@/pages/CatalogPage'
 import CourseDetailsPage from '@/pages/CourseDetailsPage'
@@ -14,16 +15,21 @@ import RegisterPage from '@/pages/RegisterPage'
 import { paths } from './paths'
 
 export const router = createBrowserRouter([
-  { path: paths.home, element: <HomePage /> },
-  { path: paths.catalog, element: <CatalogPage /> },
-  { path: paths.courseDetails(), element: <CourseDetailsPage /> },
-  { path: paths.myCourses, element: <MyCoursesPage /> },
-  { path: paths.lesson(), element: <LessonPage /> },
-  { path: paths.assignment(), element: <AssignmentPage /> },
-  { path: paths.quiz(), element: <QuizPage /> },
-  { path: paths.myGrades, element: <MyGradesPage /> },
-  { path: paths.profile, element: <ProfilePage /> },
-  { path: paths.login, element: <LoginPage /> },
-  { path: paths.register, element: <RegisterPage /> },
-  { path: '*', element: <NotFoundPage /> },
+  {
+    element: <MainLayout />,
+    children: [
+      { path: paths.home, element: <HomePage /> },
+      { path: paths.catalog, element: <CatalogPage /> },
+      { path: paths.courseDetails(), element: <CourseDetailsPage /> },
+      { path: paths.myCourses, element: <MyCoursesPage /> },
+      { path: paths.lesson(), element: <LessonPage /> },
+      { path: paths.assignment(), element: <AssignmentPage /> },
+      { path: paths.quiz(), element: <QuizPage /> },
+      { path: paths.myGrades, element: <MyGradesPage /> },
+      { path: paths.profile, element: <ProfilePage /> },
+      { path: paths.login, element: <LoginPage /> },
+      { path: paths.register, element: <RegisterPage /> },
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
 ])
