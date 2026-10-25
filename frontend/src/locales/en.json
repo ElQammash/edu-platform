@@ -8,6 +8,35 @@
     "ar": "العربية",
     "en": "English"
   },
+  "auth": {
+    "fields": {
+      "name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "passwordConfirmation": "Confirm password",
+      "gradeLevel": "Grade level",
+      "parentPhone": "Parent phone",
+      "remember": "Remember me",
+      "optional": "Optional"
+    },
+    "login": {
+      "description": "Welcome back! Log in to continue learning.",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create one"
+    },
+    "register": {
+      "description": "Create a student account to enroll in courses.",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again."
+    }
+  },
   "pages": {
     "comingSoon": "This page is coming in a later phase.",
     "home": { "title": "Home" },

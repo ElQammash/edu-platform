@@ -8,6 +8,35 @@
     "ar": "العربية",
     "en": "English"
   },
+  "auth": {
+    "fields": {
+      "name": "الاسم بالكامل",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordConfirmation": "تأكيد كلمة المرور",
+      "gradeLevel": "المرحلة الدراسية",
+      "parentPhone": "رقم ولي الأمر",
+      "remember": "تذكرني",
+      "optional": "اختياري"
+    },
+    "login": {
+      "description": "أهلاً بيك تاني! سجل دخولك وكمل تعلم.",
+      "submit": "تسجيل الدخول",
+      "submitting": "جاري تسجيل الدخول…",
+      "noAccount": "معندكش حساب؟",
+      "registerLink": "أنشئ حساب"
+    },
+    "register": {
+      "description": "أنشئ حساب طالب علشان تشترك في الكورسات.",
+      "submit": "إنشاء الحساب",
+      "submitting": "جاري إنشاء الحساب…",
+      "haveAccount": "عندك حساب بالفعل؟",
+      "loginLink": "سجل دخول"
+    },
+    "errors": {
+      "generic": "حصلت مشكلة. حاول تاني."
+    }
+  },
   "pages": {
     "comingSoon": "الصفحة دي هتتضاف في مرحلة جاية.",
     "home": { "title": "الرئيسية" },
