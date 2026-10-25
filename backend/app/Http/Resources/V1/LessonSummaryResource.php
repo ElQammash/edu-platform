@@ -28,6 +28,7 @@ class LessonSummaryResource extends JsonResource
             'type' => $this->type,
             'duration_seconds' => $this->duration_seconds,
             'is_free_preview' => $this->is_free_preview,
+            'live_at' => $this->isLive() ? $this->live_at?->toIso8601String() : null,
             'order' => $this->order,
             // Only when the current student's progress was loaded.
             'is_completed' => $this->whenLoaded('progress', fn () => $this->progress->first()?->isCompleted() ?? false),

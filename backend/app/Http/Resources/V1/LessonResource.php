@@ -30,7 +30,8 @@ class LessonResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $video = VideoUrl::parse($this->video_url);
+        // A live lesson's recording plays like a video once the session has ended.
+        $video = VideoUrl::parse($this->liveState() === Lesson::LIVE_ENDED ? $this->recording_url : $this->video_url);
         $course = $this->section->course;
 
         return [
@@ -45,6 +46,17 @@ class LessonResource extends JsonResource
             ] : null,
             'duration_seconds' => $this->duration_seconds,
             'is_free_preview' => $this->is_free_preview,
+            // Never the meeting link itself: that comes from POST /lessons/{id}/join,
+            // inside the join window, so it cannot be copied from the page early.
+            'live' => $this->isLive() ? [
+                'starts_at' => $this->live_at?->toIso8601String(),
+                'ends_at' => $this->liveEndsAt()?->toIso8601String(),
+                'join_opens_at' => $this->joinOpensAt()?->toIso8601String(),
+                'state' => $this->liveState(),
+                'can_join' => $this->canJoinNow(),
+                'has_recording' => filled($this->recording_url),
+                'server_time' => now()->toIso8601String(),
+            ] : null,
             'section' => ['id' => $this->section->id, 'title' => $this->section->title],
             'course' => ['id' => $course->id, 'slug' => $course->slug, 'title' => $course->title],
             'assignment' => $this->whenLoaded('assignment', fn () => $this->assignment
