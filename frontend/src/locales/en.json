@@ -157,7 +157,13 @@
     "graded": "Your submission for \"{{assignment}}\" was graded: {{score}} / {{max}}.",
     "regraded": "Your grade for \"{{assignment}}\" was updated: {{score}} / {{max}}.",
     "quizGraded": "Your quiz \"{{quiz}}\" was graded: {{score}} / {{max}}.",
-    "quizRegraded": "Your grade for the quiz \"{{quiz}}\" was updated: {{score}} / {{max}}."
+    "quizRegraded": "Your grade for the quiz \"{{quiz}}\" was updated: {{score}} / {{max}}.",
+    "live": {
+      "reminder24h": "Tomorrow: live lesson \"{{lesson}}\" at {{time}}.",
+      "reminder1h": "In 1 hour: live lesson \"{{lesson}}\" at {{time}}.",
+      "rescheduled": "The live lesson \"{{lesson}}\" moved to {{time}}.",
+      "cancelled": "The live lesson \"{{lesson}}\" was cancelled."
+    }
   },
   "quizzes": {
     "inLesson": "Quiz",
@@ -235,7 +241,33 @@
       "missing": "Missed (0)",
       "open": "Not done yet"
     },
-    "rules": "Lesson grade = average of its assignment and quiz. Work missed after its due date counts as 0; work not due yet is not counted."
+    "rules": "Lesson grade = average of its assignment and quiz. Work missed after its due date counts as 0; work not due yet is not counted.",
+    "attendance": {
+      "title": "Attendance",
+      "summary": "{{attended}} of {{held}} live sessions",
+      "none": "No live sessions held yet",
+      "note": "Attendance does not change your grades."
+    }
+  },
+  "live": {
+    "badge": "Live",
+    "liveNow": "Live now",
+    "upcoming": "Upcoming live session",
+    "ended": "This live session has ended",
+    "startsAt": "Starts {{date}}",
+    "duration": "Duration: {{value}}",
+    "startsIn": "Starts in",
+    "joinOpensIn": "The Join button opens in {{time}}",
+    "join": "Join live session",
+    "joining": "Opening…",
+    "joinHint": "You can join from {{minutes}} minutes before the start until the end.",
+    "addToCalendar": "Add to calendar",
+    "recording": "Recording of the session",
+    "noRecording": "No recording is available for this session.",
+    "upcomingTitle": "Upcoming live sessions",
+    "noneUpcoming": "No upcoming live sessions.",
+    "openLesson": "Open lesson",
+    "days": "{{value}} d"
   },
   "auth": {
     "fields": {
