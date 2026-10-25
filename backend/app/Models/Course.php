@@ -92,6 +92,27 @@ class Course extends Model
         return $slug;
     }
 
+    /**
+     * Lesson ids in curriculum order (section order, then lesson order).
+     *
+     * @return list<int>
+     */
+    public function orderedLessonIds(): array
+    {
+        $ids = Lesson::query()
+            ->join('sections', 'sections.id', '=', 'lessons.section_id')
+            ->where('sections.course_id', $this->id)
+            ->orderBy('sections.order')
+            ->orderBy('sections.id')
+            ->orderBy('lessons.order')
+            ->orderBy('lessons.id')
+            ->pluck('lessons.id')
+            ->map(fn ($id): int => (int) $id)
+            ->all();
+
+        return array_values($ids);
+    }
+
     public function isFree(): bool
     {
         return (float) $this->price === 0.0;

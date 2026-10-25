@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
+use App\Http\Controllers\Api\V1\LessonController;
+use App\Http\Controllers\Api\V1\LessonProgressController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,8 +34,16 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('courses/{course}', [CourseController::class, 'show'])->name('courses.show');
 
+    // Open to guests for free previews; LessonPolicy decides the rest.
+    Route::get('lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('courses/{course}/enroll', [EnrollmentController::class, 'store'])->name('courses.enroll');
         Route::get('me/courses', [EnrollmentController::class, 'index'])->name('me.courses');
+
+        Route::middleware('throttle:60,1')->group(function () {
+            Route::post('lessons/{lesson}/progress', [LessonProgressController::class, 'store'])->name('lessons.progress');
+            Route::post('lessons/{lesson}/complete', [LessonProgressController::class, 'complete'])->name('lessons.complete');
+        });
     });
 });
