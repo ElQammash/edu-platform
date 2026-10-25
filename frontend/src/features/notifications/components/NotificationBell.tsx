@@ -34,7 +34,30 @@ export function NotificationBell() {
 
   function open(notification: AppNotification) {
     if (!notification.read_at) markRead.mutate(notification.id)
-    navigate(paths.assignment(notification.data.assignment_id))
+    navigate(
+      notification.type === 'quiz_graded'
+        ? paths.attempt(notification.data.attempt_id)
+        : paths.assignment(notification.data.assignment_id),
+    )
+  }
+
+  function message(notification: AppNotification): string {
+    const score = format.number(notification.data.score)
+    const max = format.number(notification.data.max_score)
+
+    if (notification.type === 'quiz_graded') {
+      return t(notification.data.regraded ? 'notifications.quizRegraded' : 'notifications.quizGraded', {
+        quiz: notification.data.quiz_title,
+        score,
+        max,
+      })
+    }
+
+    return t(notification.data.regraded ? 'notifications.regraded' : 'notifications.graded', {
+      assignment: notification.data.assignment_title,
+      score,
+      max,
+    })
   }
 
   return (
@@ -77,13 +100,7 @@ export function NotificationBell() {
               >
                 <span className="flex w-full items-start gap-2 text-sm">
                   {!notification.read_at && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />}
-                  <span dir="auto">
-                    {t(notification.data.regraded ? 'notifications.regraded' : 'notifications.graded', {
-                      assignment: notification.data.assignment_title,
-                      score: format.number(notification.data.score),
-                      max: format.number(notification.data.max_score),
-                    })}
-                  </span>
+                  <span dir="auto">{message(notification)}</span>
                 </span>
                 <span className="text-xs text-muted-foreground" dir="auto">
                   {notification.data.course_title} · {format.dateTime(notification.created_at)}

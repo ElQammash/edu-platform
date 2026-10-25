@@ -48,10 +48,24 @@ export interface SubmissionGradedData {
   regraded: boolean
 }
 
-export interface AppNotification {
+export interface QuizGradedData {
+  attempt_id: number
+  quiz_id: number
+  quiz_title: string
+  lesson_id: number
+  course_slug: string
+  course_title: string
+  score: number
+  max_score: number
+  regraded: boolean
+}
+
+interface NotificationBase {
   id: string
-  type: 'submission_graded'
-  data: SubmissionGradedData
   read_at: string | null
   created_at: string
 }
+
+export type AppNotification =
+  | (NotificationBase & { type: 'submission_graded'; data: SubmissionGradedData })
+  | (NotificationBase & { type: 'quiz_graded'; data: QuizGradedData })
