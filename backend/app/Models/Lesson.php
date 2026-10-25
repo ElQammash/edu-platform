@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Enums\LessonType;
+use App\Observers\LessonObserver;
 use Carbon\CarbonImmutable;
 use Database\Factories\LessonFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read Section $section
  */
 #[Fillable(['section_id', 'title', 'type', 'content', 'video_url', 'duration_seconds', 'live_at', 'meeting_url', 'recording_url', 'order', 'is_free_preview'])]
+#[ObservedBy(LessonObserver::class)]
 class Lesson extends Model
 {
     /** @use HasFactory<LessonFactory> */
