@@ -21,8 +21,15 @@
   },
   "courses": {
     "free": "مجاني",
-    "language": { "ar": "العربية", "en": "الإنجليزية" },
-    "type": { "recorded": "مسجل", "live": "لايف", "hybrid": "مسجل + لايف" },
+    "language": {
+      "ar": "العربية",
+      "en": "الإنجليزية"
+    },
+    "type": {
+      "recorded": "مسجل",
+      "live": "لايف",
+      "hybrid": "مسجل + لايف"
+    },
     "card": {
       "lessons": "{{value}} درس",
       "by": "مع {{name}}"
@@ -104,6 +111,46 @@
     "noCourses": "مفيش كورسات منشورة لسه.",
     "notFound": "المدرس غير موجود"
   },
+  "assignments": {
+    "inLesson": "الواجب",
+    "open": "افتح الواجب",
+    "due": "آخر ميعاد {{date}}",
+    "noDeadline": "مفيش ميعاد تسليم",
+    "maxScore": "من {{value}}",
+    "pastDue": "آخر ميعاد للتسليم عدى. تقدر تسلم برضه، بس هيتعلم إنه متأخر.",
+    "instructions": "التعليمات",
+    "yourAnswer": "إجابتك",
+    "answerPlaceholder": "اكتب إجابتك هنا…",
+    "file": "الملف المرفق",
+    "attach": "ارفع ملف",
+    "replaceFile": "غيّر الملف",
+    "removeFile": "شيل الملف",
+    "fileHint": "ملف واحد PDF أو صورة (JPG أو PNG أو WebP)، لحد {{size}} ميجا.",
+    "fileTooLarge": "الملف ده أكبر من {{size}} ميجا.",
+    "submit": "سلّم",
+    "update": "حدّث التسليم",
+    "submitting": "جاري التسليم…",
+    "submitted": "اتسلم {{date}}",
+    "late": "متأخر",
+    "submittedOk": "إجابتك اتسلمت.",
+    "editHint": "تقدر تعدل التسليم لحد ما المدرس يصححه.",
+    "waiting": "مستني المدرس يصححه.",
+    "graded": "اتصحح",
+    "score": "{{score}} / {{max}}",
+    "feedback": "ملاحظات المدرس",
+    "lockedAfterGrading": "التسليم بعد التصحيح مينفعش يتعدل.",
+    "backToLesson": "الرجوع للدرس",
+    "notFound": "الواجب غير موجود",
+    "locked": "اشترك في الكورس علشان تفتح الواجب ده."
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "empty": "مفيش إشعارات لسه.",
+    "markAllRead": "علّم الكل كمقروء",
+    "unread": "{{count}} إشعار جديد",
+    "graded": "واجب \"{{assignment}}\" اتصحح: {{score}} / {{max}}.",
+    "regraded": "درجة واجب \"{{assignment}}\" اتعدلت: {{score}} / {{max}}."
+  },
   "auth": {
     "fields": {
       "name": "الاسم بالكامل",
@@ -139,18 +186,42 @@
   },
   "pages": {
     "comingSoon": "الصفحة دي هتتضاف في مرحلة جاية.",
-    "home": { "title": "الرئيسية" },
-    "catalog": { "title": "الكورسات" },
-    "courseDetails": { "title": "تفاصيل الكورس" },
-    "myCourses": { "title": "كورساتي" },
-    "lesson": { "title": "الدرس" },
-    "assignment": { "title": "الواجب" },
-    "quiz": { "title": "الاختبار" },
-    "myGrades": { "title": "درجاتي" },
-    "profile": { "title": "الملف الشخصي" },
-    "teacher": { "title": "المدرس" },
-    "login": { "title": "تسجيل الدخول" },
-    "register": { "title": "إنشاء حساب" },
+    "home": {
+      "title": "الرئيسية"
+    },
+    "catalog": {
+      "title": "الكورسات"
+    },
+    "courseDetails": {
+      "title": "تفاصيل الكورس"
+    },
+    "myCourses": {
+      "title": "كورساتي"
+    },
+    "lesson": {
+      "title": "الدرس"
+    },
+    "assignment": {
+      "title": "الواجب"
+    },
+    "quiz": {
+      "title": "الاختبار"
+    },
+    "myGrades": {
+      "title": "درجاتي"
+    },
+    "profile": {
+      "title": "الملف الشخصي"
+    },
+    "teacher": {
+      "title": "المدرس"
+    },
+    "login": {
+      "title": "تسجيل الدخول"
+    },
+    "register": {
+      "title": "إنشاء حساب"
+    },
     "notFound": {
       "title": "الصفحة غير موجودة",
       "description": "الصفحة اللي بتدور عليها مش موجودة.",
