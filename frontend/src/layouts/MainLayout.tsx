@@ -2,6 +2,7 @@ import { GraduationCap } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, Outlet } from 'react-router'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { UserMenu } from '@/features/auth/components/UserMenu'
 import { cn } from '@/lib/utils'
 import { paths } from '@/routes/paths'
 
@@ -41,6 +42,7 @@ export default function MainLayout() {
 
           <div className="ms-auto flex items-center gap-2">
             <LanguageSwitcher />
+            <UserMenu />
           </div>
         </div>
       </header>

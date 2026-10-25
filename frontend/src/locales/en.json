@@ -33,6 +33,10 @@
       "haveAccount": "Already have an account?",
       "loginLink": "Log in"
     },
+    "menu": {
+      "dashboard": "Dashboard",
+      "logout": "Log out"
+    },
     "errors": {
       "generic": "Something went wrong. Please try again."
     }

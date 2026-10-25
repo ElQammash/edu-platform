@@ -1,41 +1,27 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { FormTextField } from '@/components/FormTextField'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field'
 import { AuthCard } from '@/features/auth/components/AuthCard'
 import { useLogin } from '@/features/auth/hooks'
-import { panelUrlFor } from '@/features/auth/redirects'
 import { getFieldErrors, getGeneralError } from '@/lib/apiErrors'
 import { paths } from '@/routes/paths'
 
 export default function LoginPage() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const location = useLocation()
   const login = useLogin()
 
   const [form, setForm] = useState({ email: '', password: '', remember: false })
   const errors = getFieldErrors(login.error)
   const generalError = getGeneralError(login.error, t('auth.errors.generic'))
 
-  // Where a protected route sent the user from, if anywhere.
-  const from = (location.state as { from?: string } | null)?.from ?? paths.home
-
+  // After success the GuestOnly guard redirects (see routes/guards.tsx).
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    login.mutate(form, {
-      onSuccess: (user) => {
-        const panelUrl = panelUrlFor(user)
-        if (panelUrl) {
-          window.location.assign(panelUrl)
-          return
-        }
-        navigate(from, { replace: true })
-      },
-    })
+    login.mutate(form)
   }
 
   return (

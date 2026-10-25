@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { FormTextField } from '@/components/FormTextField'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -12,7 +12,6 @@ import { paths } from '@/routes/paths'
 
 export default function RegisterPage() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const register = useRegister()
 
   const [form, setForm] = useState({
@@ -29,17 +28,15 @@ export default function RegisterPage() {
   const set = (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [field]: e.target.value })
 
+  // After success the GuestOnly guard redirects (see routes/guards.tsx).
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    register.mutate(
-      {
-        ...form,
-        // Optional fields: send nothing rather than an empty string.
-        grade_level: form.grade_level || undefined,
-        parent_phone: form.parent_phone || undefined,
-      },
-      { onSuccess: () => navigate(paths.home, { replace: true }) },
-    )
+    register.mutate({
+      ...form,
+      // Optional fields: send nothing rather than an empty string.
+      grade_level: form.grade_level || undefined,
+      parent_phone: form.parent_phone || undefined,
+    })
   }
 
   return (

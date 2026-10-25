@@ -12,23 +12,40 @@ import NotFoundPage from '@/pages/NotFoundPage'
 import ProfilePage from '@/pages/ProfilePage'
 import QuizPage from '@/pages/QuizPage'
 import RegisterPage from '@/pages/RegisterPage'
+import { GuestOnly, RequireAuth } from './guards'
 import { paths } from './paths'
 
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
+      // Public
       { path: paths.home, element: <HomePage /> },
       { path: paths.catalog, element: <CatalogPage /> },
       { path: paths.courseDetails(), element: <CourseDetailsPage /> },
-      { path: paths.myCourses, element: <MyCoursesPage /> },
-      { path: paths.lesson(), element: <LessonPage /> },
-      { path: paths.assignment(), element: <AssignmentPage /> },
-      { path: paths.quiz(), element: <QuizPage /> },
-      { path: paths.myGrades, element: <MyGradesPage /> },
-      { path: paths.profile, element: <ProfilePage /> },
-      { path: paths.login, element: <LoginPage /> },
-      { path: paths.register, element: <RegisterPage /> },
+
+      // Guests only
+      {
+        element: <GuestOnly />,
+        children: [
+          { path: paths.login, element: <LoginPage /> },
+          { path: paths.register, element: <RegisterPage /> },
+        ],
+      },
+
+      // Signed-in students
+      {
+        element: <RequireAuth role="student" />,
+        children: [
+          { path: paths.myCourses, element: <MyCoursesPage /> },
+          { path: paths.lesson(), element: <LessonPage /> },
+          { path: paths.assignment(), element: <AssignmentPage /> },
+          { path: paths.quiz(), element: <QuizPage /> },
+          { path: paths.myGrades, element: <MyGradesPage /> },
+          { path: paths.profile, element: <ProfilePage /> },
+        ],
+      },
+
       { path: '*', element: <NotFoundPage /> },
     ],
   },
