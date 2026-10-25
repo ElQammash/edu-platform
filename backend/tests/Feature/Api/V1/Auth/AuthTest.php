@@ -159,6 +159,18 @@ class AuthTest extends TestCase
         $this->getJson(route('api.v1.auth.me'))->assertUnauthorized();
     }
 
+    public function test_the_interface_language_is_saved_on_the_account(): void
+    {
+        $user = User::factory()->student()->create();
+
+        $this->actingAs($user)->putJson(route('api.v1.me.locale'), ['locale' => 'en'])->assertNoContent();
+        $this->assertSame('en', $user->refresh()->locale);
+        $this->assertSame('en', $user->preferredLocale());
+
+        $this->actingAs($user)->getJson(route('api.v1.auth.me'))->assertJsonPath('data.locale', 'en');
+        $this->actingAs($user)->putJson(route('api.v1.me.locale'), ['locale' => 'fr'])->assertUnprocessable();
+    }
+
     public function test_guests_get_a_401_even_without_asking_for_json(): void
     {
         // e.g. a link opened in a new tab: no Accept: application/json header.

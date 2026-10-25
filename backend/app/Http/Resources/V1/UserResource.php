@@ -23,6 +23,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'roles' => $this->getRoleNames(),
+            // Saved interface language (used for emails); null until chosen.
+            'locale' => $this->locale,
             'student_profile' => new StudentProfileResource($this->whenLoaded('studentProfile')),
             'teacher_profile' => new TeacherProfileResource($this->whenLoaded('teacherProfile')),
             'created_at' => $this->created_at?->toIso8601String(),
