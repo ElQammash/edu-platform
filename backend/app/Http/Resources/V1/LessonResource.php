@@ -50,6 +50,9 @@ class LessonResource extends JsonResource
             'assignment' => $this->whenLoaded('assignment', fn () => $this->assignment
                 ? new AssignmentSummaryResource($this->assignment)
                 : null),
+            'quiz' => $this->whenLoaded('quiz', fn () => $this->quiz
+                ? new QuizSummaryResource($this->quiz)
+                : null),
             'previous_lesson_id' => $this->neighbours['previous'],
             'next_lesson_id' => $this->neighbours['next'],
             'progress' => $this->whenLoaded('progress', function () {

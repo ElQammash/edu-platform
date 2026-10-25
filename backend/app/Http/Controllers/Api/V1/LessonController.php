@@ -35,6 +35,11 @@ class LessonController extends Controller
             $lesson->setRelation('assignment', $assignment);
         }
 
+        $quiz = $lesson->quiz()->first()?->setRelation('lesson', $lesson);
+        if ($user && $quiz && Gate::forUser($user)->allows('view', $quiz)) {
+            $lesson->setRelation('quiz', $quiz);
+        }
+
         $ids = $lesson->course()->orderedLessonIds();
         $position = array_search($lesson->id, $ids, true);
 
