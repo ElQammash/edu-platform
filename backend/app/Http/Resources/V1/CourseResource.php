@@ -33,6 +33,10 @@ class CourseResource extends JsonResource
             'language' => $this->language,
             'type' => $this->type,
             'published_at' => $this->published_at?->toIso8601String(),
+            'rating' => [
+                'average' => (float) $this->rating_avg,
+                'count' => $this->reviews_count,
+            ],
             'teacher' => new TeacherSummaryResource($this->whenLoaded('teacher')),
             'lessons_count' => $this->whenCounted('lessons'),
             'students_count' => $this->whenCounted('enrollments'),

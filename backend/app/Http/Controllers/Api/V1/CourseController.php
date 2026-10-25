@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Gate;
 class CourseController extends Controller
 {
     /**
-     * The public catalog: published courses only, newest first.
+     * The public catalog: published courses only, newest first, or highest
+     * rated first (sort=rating; more reviews win a tie).
      */
     public function index(CourseIndexRequest $request): AnonymousResourceCollection
     {
@@ -30,6 +31,7 @@ class CourseController extends Controller
             ->when($filters['teacher'] ?? null, fn (Builder $q, int|string $teacher) => $q->where('teacher_id', $teacher))
             ->when(($filters['price'] ?? null) === 'free', fn (Builder $q) => $q->where('price', 0))
             ->when(($filters['price'] ?? null) === 'paid', fn (Builder $q) => $q->where('price', '>', 0))
+            ->when(($filters['sort'] ?? null) === 'rating', fn (Builder $q) => $q->orderByDesc('rating_avg')->orderByDesc('reviews_count'))
             ->latest('published_at')
             ->latest('id')
             ->paginate($filters['per_page'] ?? 12)
