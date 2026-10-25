@@ -4,6 +4,7 @@ import { ErrorState } from '@/components/ErrorState'
 import { Button } from '@/components/ui/button'
 import { CourseCard, CourseCardSkeleton, CourseGrid } from '@/features/courses/components/CourseCard'
 import { useMyCourses } from '@/features/courses/hooks'
+import { UpcomingLiveSessions } from '@/features/live/components/UpcomingLiveSessions'
 import { paths } from '@/routes/paths'
 
 export default function MyCoursesPage() {
@@ -16,6 +17,8 @@ export default function MyCoursesPage() {
         <h1 className="text-3xl font-bold">{t('pages.myCourses.title')}</h1>
         <p className="text-muted-foreground">{t('myCourses.subtitle')}</p>
       </header>
+
+      <UpcomingLiveSessions />
 
       {isError ? (
         <ErrorState onRetry={() => void refetch()} />
