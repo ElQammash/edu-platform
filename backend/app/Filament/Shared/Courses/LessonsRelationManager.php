@@ -3,17 +3,20 @@
 namespace App\Filament\Shared\Courses;
 
 use App\Enums\LessonType;
+use App\Models\Assignment;
 use App\Models\Lesson;
 use App\Models\Section;
 use App\Rules\SupportedVideoUrl;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Section as FormSection;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
@@ -86,6 +89,50 @@ class LessonsRelationManager extends RelationManager
                     ->helperText(__('courses.lesson.hints.content'))
                     ->disableToolbarButtons(['attachFiles'])
                     ->required(fn (Get $get): bool => self::typeOf($get('type')) === LessonType::Text)
+                    ->columnSpanFull(),
+
+                self::assignmentSection(),
+            ]);
+    }
+
+    /**
+     * The lesson's optional assignment. A new one is created only when a
+     * title is filled in. An existing one is never removed from this form:
+     * Filament deletes a related record whose condition turns false, and
+     * that would also delete every student's submission.
+     */
+    private static function assignmentSection(): FormSection
+    {
+        $exists = fn (?Lesson $record): bool => $record?->assignment()->exists() ?? false;
+
+        return FormSection::make(__('assignments.section'))
+            ->description(__('assignments.section_hint'))
+            ->collapsible()
+            ->collapsed(fn (?Lesson $record): bool => ! $exists($record))
+            ->columnSpanFull()
+            ->columns(2)
+            ->relationship('assignment', condition: fn (Get $get, ?Lesson $record): bool => $exists($record) || filled($get('assignment.title')))
+            ->schema([
+                TextInput::make('title')
+                    ->label(__('assignments.fields.title'))
+                    ->maxLength(255)
+                    // Once it exists it can be renamed, not blanked out.
+                    ->required(fn (?Assignment $record): bool => $record !== null),
+                TextInput::make('max_score')
+                    ->label(__('assignments.fields.max_score'))
+                    ->numeric()
+                    ->integer()
+                    ->minValue(1)
+                    ->maxValue(1000)
+                    ->default(100)
+                    ->required(fn (Get $get): bool => filled($get('title'))),
+                DateTimePicker::make('due_at')
+                    ->label(__('assignments.fields.due_at'))
+                    ->helperText(__('assignments.hints.due_at'))
+                    ->seconds(false),
+                MarkdownEditor::make('instructions')
+                    ->label(__('assignments.fields.instructions'))
+                    ->disableToolbarButtons(['attachFiles'])
                     ->columnSpanFull(),
             ]);
     }
