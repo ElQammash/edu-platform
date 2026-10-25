@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\QuizAttemptController;
 use App\Http\Controllers\Api\V1\QuizController;
+use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SubmissionController;
 use App\Http\Controllers\Api\V1\TeacherController;
@@ -47,6 +48,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // Public catalog
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('courses/{course}/reviews', [ReviewController::class, 'index'])->name('courses.reviews');
     Route::get('teachers/{teacher}', [TeacherController::class, 'show'])->whereNumber('teacher')->name('teachers.show');
 
     // Open to guests for free previews; LessonPolicy decides the rest.
@@ -55,6 +57,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('courses/{course}/enroll', [EnrollmentController::class, 'store'])->name('courses.enroll');
+        Route::get('courses/{course}/review', [ReviewController::class, 'mine'])->name('courses.review');
+        Route::put('courses/{course}/review', [ReviewController::class, 'save'])->middleware('throttle:10,1')->name('courses.review.save');
+        Route::delete('courses/{course}/review', [ReviewController::class, 'destroy'])->name('courses.review.destroy');
         Route::get('me/courses', [EnrollmentController::class, 'index'])->name('me.courses');
         Route::put('me/locale', [LocaleController::class, 'update'])->name('me.locale');
         Route::get('me/profile', [ProfileController::class, 'show'])->name('me.profile');
