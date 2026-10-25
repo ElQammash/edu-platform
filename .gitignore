@@ -1,0 +1,20 @@
+# Repo-wide ignores. Each app has its own .gitignore for build output and dependencies.
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors and IDEs
+/.idea
+/.vscode
+/.fleet
+/.zed
+*.swp
+
+# AI assistants (local settings)
+/.claude
+/.cursor
+
+# Logs
+*.log
