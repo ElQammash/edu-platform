@@ -44,3 +44,8 @@ export async function fetchMe(): Promise<User | null> {
     throw error
   }
 }
+
+/** Remember the interface language on the account (emails use it). */
+export async function saveLocale(locale: 'ar' | 'en'): Promise<void> {
+  await api.put('/me/locale', { locale })
+}
