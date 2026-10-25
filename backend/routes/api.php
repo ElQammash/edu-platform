@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AssignmentController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\SettingsController;
+use App\Http\Controllers\Api\V1\SubmissionController;
 use App\Http\Controllers\Api\V1\TeacherController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +51,16 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('me/courses', [EnrollmentController::class, 'index'])->name('me.courses');
         Route::get('me/profile', [ProfileController::class, 'show'])->name('me.profile');
         Route::post('me/profile', [ProfileController::class, 'update'])->name('me.profile.update');
+
+        Route::get('assignments/{assignment}', [AssignmentController::class, 'show'])->name('assignments.show');
+        Route::post('assignments/{assignment}/submission', [SubmissionController::class, 'store'])
+            ->middleware('throttle:20,1')
+            ->name('assignments.submit');
+        Route::get('submissions/{submission}/file', [SubmissionController::class, 'file'])->name('submissions.file');
+
+        Route::get('me/notifications', [NotificationController::class, 'index'])->name('me.notifications');
+        Route::post('me/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('me.notifications.read-all');
+        Route::post('me/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('me.notifications.read');
 
         Route::middleware('throttle:60,1')->group(function () {
             Route::post('lessons/{lesson}/progress', [LessonProgressController::class, 'store'])->name('lessons.progress');
