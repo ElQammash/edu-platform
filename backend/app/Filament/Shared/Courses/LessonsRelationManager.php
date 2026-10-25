@@ -7,6 +7,7 @@ use App\Filament\Shared\Quizzes\QuizForm;
 use App\Models\Assignment;
 use App\Models\Lesson;
 use App\Models\Section;
+use App\Rules\SupportedMeetingUrl;
 use App\Rules\SupportedVideoUrl;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -46,6 +47,8 @@ class LessonsRelationManager extends RelationManager
     public function form(Schema $schema): Schema
     {
         $isVideo = fn (Get $get): bool => self::typeOf($get('type')) === LessonType::Video;
+        $isLive = fn (Get $get): bool => self::typeOf($get('type')) === LessonType::Live;
+        $hasDuration = fn (Get $get): bool => $isVideo($get) || $isLive($get);
 
         return $schema
             ->columns(2)
@@ -79,7 +82,31 @@ class LessonsRelationManager extends RelationManager
                     ->step(0.5)
                     ->formatStateUsing(fn (?int $state): ?float => $state ? round($state / 60, 1) : null)
                     ->dehydrateStateUsing(fn (mixed $state): ?int => is_numeric($state) ? (int) round((float) $state * 60) : null)
-                    ->visible($isVideo),
+                    ->required($isLive)
+                    ->visible($hasDuration),
+                // Live session (shown in Cairo time, the app timezone).
+                DateTimePicker::make('live_at')
+                    ->label(__('live.fields.live_at'))
+                    ->helperText(__('live.hints.live_at'))
+                    ->seconds(false)
+                    ->required($isLive)
+                    ->visible($isLive),
+                TextInput::make('meeting_url')
+                    ->label(__('live.fields.meeting_url'))
+                    ->helperText(__('live.hints.meeting_url'))
+                    ->url()
+                    ->maxLength(255)
+                    ->rule(new SupportedMeetingUrl)
+                    ->required($isLive)
+                    ->visible($isLive),
+                TextInput::make('recording_url')
+                    ->label(__('live.fields.recording_url'))
+                    ->helperText(__('live.hints.recording_url'))
+                    ->url()
+                    ->maxLength(255)
+                    ->rule(new SupportedVideoUrl)
+                    ->visible($isLive)
+                    ->columnSpanFull(),
                 Toggle::make('is_free_preview')
                     ->label(__('courses.lesson.fields.is_free_preview'))
                     ->helperText(__('courses.lesson.hints.is_free_preview'))
@@ -169,7 +196,8 @@ class LessonsRelationManager extends RelationManager
                     ->label(__('courses.lesson.fields.title')),
                 TextColumn::make('type')
                     ->label(__('courses.lesson.fields.type'))
-                    ->badge(),
+                    ->badge()
+                    ->description(fn (Lesson $record): ?string => $record->isLive() ? $record->live_at?->translatedFormat('j M Y, H:i') : null),
                 TextColumn::make('duration_seconds')
                     ->label(__('courses.lesson.fields.duration'))
                     ->formatStateUsing(fn (?int $state): string => $state ? (string) round($state / 60, 1) : '—'),
@@ -185,26 +213,39 @@ class LessonsRelationManager extends RelationManager
                         // New lessons go to the end of the section.
                         $data['order'] = (int) $section->lessons()->max('order') + 1;
 
-                        return self::withoutVideoForTextLessons($data);
+                        return self::onlyFieldsOfItsType($data);
                     }),
             ])
             ->recordActions([
+                AttendanceAction::make(),
                 EditAction::make()
-                    ->mutateDataUsing(fn (array $data): array => self::withoutVideoForTextLessons($data)),
+                    ->mutateDataUsing(fn (array $data): array => self::onlyFieldsOfItsType($data)),
                 DeleteAction::make(),
             ]);
     }
 
     /**
-     * A text lesson keeps no video link or duration, so a stale link cannot linger.
+     * Drop the fields that do not belong to the lesson's type, so a stale
+     * video or meeting link cannot linger after the type changes.
      *
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    private static function withoutVideoForTextLessons(array $data): array
+    private static function onlyFieldsOfItsType(array $data): array
     {
-        if (self::typeOf($data['type'] ?? null) !== LessonType::Video) {
+        $type = self::typeOf($data['type'] ?? null);
+
+        if ($type !== LessonType::Video) {
             $data['video_url'] = null;
+        }
+
+        if ($type !== LessonType::Live) {
+            $data['live_at'] = null;
+            $data['meeting_url'] = null;
+            $data['recording_url'] = null;
+        }
+
+        if ($type === LessonType::Text) {
             $data['duration_seconds'] = null;
         }
 

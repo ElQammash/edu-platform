@@ -21,7 +21,7 @@ enum LessonType: string implements HasLabel
     }
 
     /**
-     * Types teachers can pick today; live sessions arrive in phase 5.
+     * Types offered in the lesson form.
      *
      * @return array<string, string>
      */
@@ -29,6 +29,7 @@ enum LessonType: string implements HasLabel
     {
         return [
             self::Video->value => self::Video->label(),
+            self::Live->value => self::Live->label(),
             self::Text->value => self::Text->label(),
         ];
     }
