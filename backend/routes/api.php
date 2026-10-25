@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
+use App\Http\Controllers\Api\V1\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +30,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::get('me', [AuthController::class, 'me'])->name('me');
         });
     });
+
+    Route::get('settings', [SettingsController::class, 'show'])->name('settings');
 
     // Public catalog
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
