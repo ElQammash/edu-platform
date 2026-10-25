@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Assignment;
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Quiz;
+use App\Models\QuizAttempt;
 use App\Models\Submission;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
@@ -34,6 +36,10 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(4, Submission::count());
         $this->assertSame(3, Submission::pending()->count());
         $this->assertSame(1, User::where('email', 'student1@edu-platform.test')->sole()->unreadNotifications()->count());
+        $this->assertSame(4, Quiz::count());
+        $this->assertSame(2, QuizAttempt::count());
+        $this->assertSame(1, QuizAttempt::whereNotNull('graded_at')->count());
+        $this->assertEquals(3, QuizAttempt::whereNotNull('graded_at')->value('score')); // 2 + 0 + 1 of 5 points: 60%, exactly the pass mark
         $this->assertSame(50, Enrollment::whereHas('student', fn ($q) => $q->where('email', 'student1@edu-platform.test'))
             ->whereHas('course', fn ($q) => $q->where('slug', 'physics-secondary-3'))
             ->value('progress_percent'));
