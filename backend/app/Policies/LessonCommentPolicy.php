@@ -15,6 +15,14 @@ use Illuminate\Auth\Access\Response;
 class LessonCommentPolicy
 {
     /**
+     * The Q&A inbox in the panels (scoped to the teacher's courses there).
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin() || $user->isTeacher();
+    }
+
+    /**
      * Read the Q&A of a lesson and reply in it.
      */
     public function participate(User $user, Lesson $lesson): bool
