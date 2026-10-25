@@ -29,6 +29,8 @@ use Illuminate\Support\Str;
  * @property Language $language
  * @property CourseType $type
  * @property CourseStatus $status
+ * @property string $rating_avg
+ * @property int $reviews_count
  * @property CarbonImmutable|null $published_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -69,6 +71,8 @@ class Course extends Model
             'type' => CourseType::class,
             'status' => CourseStatus::class,
             'published_at' => 'datetime',
+            'rating_avg' => 'decimal:2',
+            'reviews_count' => 'integer',
         ];
     }
 
@@ -172,5 +176,13 @@ class Course extends Model
         return $this->belongsToMany(User::class, 'enrollments', 'course_id', 'student_id')
             ->withPivot(['payment_status', 'enrolled_at', 'progress_percent'])
             ->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<Review, $this>
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 }
