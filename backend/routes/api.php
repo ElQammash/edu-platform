@@ -4,10 +4,13 @@ use App\Http\Controllers\Api\V1\AssignmentController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
+use App\Http\Controllers\Api\V1\GradesController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\QuizAttemptController;
+use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SubmissionController;
 use App\Http\Controllers\Api\V1\TeacherController;
@@ -57,6 +60,19 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->middleware('throttle:20,1')
             ->name('assignments.submit');
         Route::get('submissions/{submission}/file', [SubmissionController::class, 'file'])->name('submissions.file');
+
+        Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+        Route::post('quizzes/{quiz}/attempts', [QuizController::class, 'start'])
+            ->middleware('throttle:20,1')
+            ->name('quizzes.start');
+        Route::get('attempts/{attempt}', [QuizAttemptController::class, 'show'])->name('attempts.show');
+        // Autosave is frequent; submit is once.
+        Route::put('attempts/{attempt}/answers', [QuizAttemptController::class, 'saveAnswers'])
+            ->middleware('throttle:120,1')
+            ->name('attempts.answers');
+        Route::post('attempts/{attempt}/submit', [QuizAttemptController::class, 'submit'])->name('attempts.submit');
+
+        Route::get('me/grades', [GradesController::class, 'index'])->name('me.grades');
 
         Route::get('me/notifications', [NotificationController::class, 'index'])->name('me.notifications');
         Route::post('me/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('me.notifications.read-all');
