@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\AttendanceService;
 use App\Services\GradeCalculator;
 use App\Support\Grades\ComponentGrade;
 use App\Support\Grades\CourseGrade;
@@ -17,13 +18,17 @@ class GradesController extends Controller
      * GET /me/grades: for each enrolled course, the lesson grades, the course
      * grade and how much assessed work is done.
      */
-    public function index(Request $request, GradeCalculator $calculator): JsonResponse
+    public function index(Request $request, GradeCalculator $calculator, AttendanceService $attendance): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
 
         $courses = $user->enrolledCourses()->orderBy('enrollments.enrolled_at')->get()
-            ->map(fn ($course) => $this->course($calculator->forCourse($user, $course)))
+            ->map(fn ($course) => [
+                ...$this->course($calculator->forCourse($user, $course)),
+                // Shown next to the grades; it does not change them.
+                'attendance' => $attendance->summary($user, $course),
+            ])
             ->values();
 
         return response()->json(['data' => $courses]);
