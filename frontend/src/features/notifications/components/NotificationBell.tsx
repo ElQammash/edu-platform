@@ -34,30 +34,45 @@ export function NotificationBell() {
 
   function open(notification: AppNotification) {
     if (!notification.read_at) markRead.mutate(notification.id)
-    navigate(
-      notification.type === 'quiz_graded'
-        ? paths.attempt(notification.data.attempt_id)
-        : paths.assignment(notification.data.assignment_id),
-    )
+
+    switch (notification.type) {
+      case 'quiz_graded':
+        return navigate(paths.attempt(notification.data.attempt_id))
+      case 'submission_graded':
+        return navigate(paths.assignment(notification.data.assignment_id))
+      case 'live_lesson_cancelled':
+        return navigate(paths.courseDetails(notification.data.course_slug))
+      default:
+        return navigate(paths.lesson(notification.data.lesson_id))
+    }
   }
 
   function message(notification: AppNotification): string {
-    const score = format.number(notification.data.score)
-    const max = format.number(notification.data.max_score)
-
-    if (notification.type === 'quiz_graded') {
-      return t(notification.data.regraded ? 'notifications.quizRegraded' : 'notifications.quizGraded', {
-        quiz: notification.data.quiz_title,
-        score,
-        max,
-      })
+    switch (notification.type) {
+      case 'quiz_graded':
+        return t(notification.data.regraded ? 'notifications.quizRegraded' : 'notifications.quizGraded', {
+          quiz: notification.data.quiz_title,
+          score: format.number(notification.data.score),
+          max: format.number(notification.data.max_score),
+        })
+      case 'submission_graded':
+        return t(notification.data.regraded ? 'notifications.regraded' : 'notifications.graded', {
+          assignment: notification.data.assignment_title,
+          score: format.number(notification.data.score),
+          max: format.number(notification.data.max_score),
+        })
+      case 'live_lesson_reminder': {
+        const vars = { lesson: notification.data.lesson_title, time: format.dateTime(notification.data.starts_at ?? '') }
+        return notification.data.kind === '24h' ? t('notifications.live.reminder24h', vars) : t('notifications.live.reminder1h', vars)
+      }
+      case 'live_lesson_rescheduled':
+        return t('notifications.live.rescheduled', {
+          lesson: notification.data.lesson_title,
+          time: format.dateTime(notification.data.starts_at ?? ''),
+        })
+      case 'live_lesson_cancelled':
+        return t('notifications.live.cancelled', { lesson: notification.data.lesson_title })
     }
-
-    return t(notification.data.regraded ? 'notifications.regraded' : 'notifications.graded', {
-      assignment: notification.data.assignment_title,
-      score,
-      max,
-    })
   }
 
   return (
