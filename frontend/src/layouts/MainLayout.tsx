@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Link, NavLink, Outlet } from 'react-router'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { UserMenu } from '@/features/auth/components/UserMenu'
+import { useAuth } from '@/features/auth/hooks'
+import { NotificationBell } from '@/features/notifications/components/NotificationBell'
 import { cn } from '@/lib/utils'
 import { paths } from '@/routes/paths'
 
@@ -10,6 +12,7 @@ const currentYear = new Date().getFullYear()
 
 export default function MainLayout() {
   const { t } = useTranslation()
+  const { hasRole } = useAuth()
 
   const navItems = [
     { to: paths.catalog, label: t('pages.catalog.title') },
@@ -42,6 +45,7 @@ export default function MainLayout() {
 
           <div className="ms-auto flex items-center gap-2">
             <LanguageSwitcher />
+            {hasRole('student') && <NotificationBell />}
             <UserMenu />
           </div>
         </div>
