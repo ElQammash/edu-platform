@@ -12,6 +12,7 @@ import NotFoundPage from '@/pages/NotFoundPage'
 import ProfilePage from '@/pages/ProfilePage'
 import QuizPage from '@/pages/QuizPage'
 import RegisterPage from '@/pages/RegisterPage'
+import TeacherPage from '@/pages/TeacherPage'
 import { GuestOnly, RequireAuth } from './guards'
 import { paths } from './paths'
 
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
       { path: paths.courseDetails(), element: <CourseDetailsPage /> },
       // Free previews are open to guests; the API decides access to the rest.
       { path: paths.lesson(), element: <LessonPage /> },
+      { path: paths.teacher(), element: <TeacherPage /> },
 
       // Guests only
       {
