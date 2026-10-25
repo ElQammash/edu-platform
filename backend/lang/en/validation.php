@@ -181,8 +181,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'parent_phone' => [
+            'regex' => 'The :attribute must be a valid Egyptian mobile number (e.g. 01012345678).',
         ],
     ],
 
@@ -197,6 +197,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'grade_level' => 'grade level',
+        'parent_phone' => 'parent phone',
+    ],
 
 ];

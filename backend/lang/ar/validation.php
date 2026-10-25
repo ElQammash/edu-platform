@@ -158,7 +158,14 @@ return [
     'uppercase' => 'يجب أن يحتوي الحقل :attribute على حروف كبيرة.',
     'url' => 'صيغة رابط حقل :attribute غير صحيحة.',
     'uuid' => 'حقل :attribute يجب أن يكون بصيغة UUID سليمة.',
+    'custom' => [
+        'parent_phone' => [
+            'regex' => 'يجب أن يكون :attribute رقم موبايل مصري صحيح (مثال: 01012345678).',
+        ],
+    ],
     'attributes' => [
+        'grade_level' => 'المرحلة الدراسية',
+        'parent_phone' => 'هاتف ولي الأمر',
         'address' => 'العنوان',
         'affiliate_url' => 'رابط الأفلييت',
         'age' => 'العمر',
