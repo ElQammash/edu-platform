@@ -150,7 +150,10 @@ class QuizApiTest extends TestCase
     {
         $this->quiz->update(['due_at' => now()->addDay()]);
 
-        $id = $this->takeAndSubmit()->assertJsonPath('data.answers_revealed', false)->json('data.id');
+        $id = $this->takeAndSubmit()
+            ->assertJsonPath('data.answers_revealed', false)
+            ->assertJsonPath('data.quiz.show_answers', ShowAnswers::AfterDueDate->value)
+            ->json('data.id');
 
         $this->travel(2)->days();
         $this->actingAs($this->student)

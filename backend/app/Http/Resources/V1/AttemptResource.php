@@ -42,6 +42,9 @@ class AttemptResource extends AttemptSummaryResource
                 'id' => $quiz->id,
                 'title' => $quiz->title,
                 'pass_score' => $quiz->pass_score,
+                'due_at' => $quiz->due_at?->toIso8601String(),
+                // Effective setting, so the app can say why answers are hidden.
+                'show_answers' => $quiz->effectiveShowAnswers(),
                 'lesson_id' => $quiz->lesson_id,
                 'course_slug' => $quiz->course()->slug,
             ],
