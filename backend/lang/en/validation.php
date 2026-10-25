@@ -187,6 +187,9 @@ return [
         'video_url' => [
             'supported' => 'The :attribute must be a Bunny Stream, YouTube or Vimeo link.',
         ],
+        'meeting_url' => [
+            'supported' => 'The :attribute must be an https Zoom, Google Meet or Microsoft Teams link.',
+        ],
     ],
 
     /*

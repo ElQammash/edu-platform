@@ -165,6 +165,9 @@ return [
         'video_url' => [
             'supported' => 'يجب أن يكون :attribute رابط من Bunny Stream أو YouTube أو Vimeo.',
         ],
+        'meeting_url' => [
+            'supported' => 'يجب أن يكون :attribute رابط https من Zoom أو Google Meet أو Microsoft Teams.',
+        ],
     ],
     'attributes' => [
         'grade_level' => 'المرحلة الدراسية',
