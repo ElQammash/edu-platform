@@ -9,6 +9,8 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -62,6 +64,52 @@ class User extends Authenticatable implements FilamentUser
     public function studentProfile(): HasOne
     {
         return $this->hasOne(StudentProfile::class);
+    }
+
+    /**
+     * Courses this user teaches.
+     *
+     * @return HasMany<Course, $this>
+     */
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
+
+    /**
+     * @return HasMany<Enrollment, $this>
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class, 'student_id');
+    }
+
+    /**
+     * @return BelongsToMany<Course, $this>
+     */
+    public function enrolledCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'enrollments', 'student_id', 'course_id')
+            ->withPivot(['payment_status', 'enrolled_at', 'progress_percent'])
+            ->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<LessonProgress, $this>
+     */
+    public function lessonProgress(): HasMany
+    {
+        return $this->hasMany(LessonProgress::class, 'student_id');
+    }
+
+    public function isEnrolledIn(Course $course): bool
+    {
+        return $this->enrollments()->where('course_id', $course->id)->exists();
+    }
+
+    public function teaches(Course $course): bool
+    {
+        return $course->teacher_id === $this->id;
     }
 
     /**
