@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'currency' => 'ج.م',
     'course' => [
         'label' => 'كورس',
         'plural_label' => 'الكورسات',

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'currency' => 'EGP',
     'course' => [
         'label' => 'Course',
         'plural_label' => 'Courses',

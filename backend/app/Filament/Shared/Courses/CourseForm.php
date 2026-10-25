@@ -71,7 +71,7 @@ class CourseForm
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(100000)
-                            ->suffix('EGP')
+                            ->suffix(__('courses.currency'))
                             ->default(0)
                             ->required(),
                         Select::make('language')
