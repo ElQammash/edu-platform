@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 import { ErrorState } from '@/components/ErrorState'
@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CourseCard, CourseCardSkeleton, CourseGrid } from '@/features/courses/components/CourseCard'
 import { useCourses } from '@/features/courses/hooks'
-import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { useFormatters } from '@/hooks/useFormatters'
 import type { CourseFilters } from '@/types/course'
 
@@ -39,9 +38,18 @@ export default function CatalogPage() {
   const filters = filtersFrom(params)
 
   const [search, setSearch] = useState(filters.search ?? '')
-  const debouncedSearch = useDebouncedValue(search)
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const { data, isPending, isError, refetch, isPlaceholderData } = useCourses(filters)
+
+  useEffect(() => () => clearTimeout(searchTimer.current), [])
+
+  // Typing updates the box at once and the URL (and so the query) after a pause.
+  function changeSearch(value: string) {
+    setSearch(value)
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => update({ search: value.trim() || undefined }), 400)
+  }
 
   function update(changes: Partial<Record<keyof CourseFilters, string | undefined>>) {
     setParams((current) => {
@@ -55,11 +63,6 @@ export default function CatalogPage() {
       return next
     })
   }
-
-  useEffect(() => {
-    if (debouncedSearch !== (filters.search ?? '')) update({ search: debouncedSearch.trim() || undefined })
-    // Only react to the debounced text, not to every URL change.
-  }, [debouncedSearch])
 
   const hasFilters = Boolean(filters.search || filters.language || filters.type || filters.price)
 
@@ -76,7 +79,7 @@ export default function CatalogPage() {
           <Input
             type="search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => changeSearch(e.target.value)}
             placeholder={t('courses.catalog.searchPlaceholder')}
             aria-label={t('courses.catalog.searchPlaceholder')}
             className="ps-9"
@@ -121,6 +124,7 @@ export default function CatalogPage() {
           <Button
             variant="ghost"
             onClick={() => {
+              clearTimeout(searchTimer.current)
               setSearch('')
               setParams(new URLSearchParams())
             }}
