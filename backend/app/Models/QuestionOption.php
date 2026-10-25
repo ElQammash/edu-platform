@@ -29,6 +29,14 @@ class QuestionOption extends Model
     use HasFactory;
 
     /**
+     * Stored bodies of the two true/false options (order 0 and 1). Apps show
+     * them translated, so a quiz reads right in either language.
+     */
+    public const TRUE = 'True';
+
+    public const FALSE = 'False';
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

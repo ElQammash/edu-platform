@@ -39,7 +39,7 @@ class QuestionFactory extends Factory
             }
 
             $bodies = $question->type === QuestionType::TrueFalse
-                ? [__('quizzes.true'), __('quizzes.false')]
+                ? [QuestionOption::TRUE, QuestionOption::FALSE]
                 : [fake()->word(), fake()->word(), fake()->word(), fake()->word()];
 
             foreach ($bodies as $i => $body) {

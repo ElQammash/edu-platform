@@ -3,6 +3,7 @@
 namespace App\Filament\Shared\Courses;
 
 use App\Enums\LessonType;
+use App\Filament\Shared\Quizzes\QuizForm;
 use App\Models\Assignment;
 use App\Models\Lesson;
 use App\Models\Section;
@@ -92,7 +93,27 @@ class LessonsRelationManager extends RelationManager
                     ->columnSpanFull(),
 
                 self::assignmentSection(),
+                self::quizSection(),
             ]);
+    }
+
+    /**
+     * The lesson's optional quiz settings; questions are added on the quiz
+     * page. Same rule as the assignment: created only with a title, never
+     * removed from this form (that would delete students' attempts).
+     */
+    private static function quizSection(): FormSection
+    {
+        $exists = fn (?Lesson $record): bool => $record?->quiz()->exists() ?? false;
+
+        return FormSection::make(__('quizzes.section'))
+            ->description(__('quizzes.section_hint'))
+            ->collapsible()
+            ->collapsed(fn (?Lesson $record): bool => ! $exists($record))
+            ->columnSpanFull()
+            ->columns(2)
+            ->relationship('quiz', condition: fn (Get $get, ?Lesson $record): bool => $exists($record) || filled($get('quiz.title')))
+            ->schema(QuizForm::fields(optional: true));
     }
 
     /**
