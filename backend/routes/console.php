@@ -20,6 +20,11 @@ use Illuminate\Support\Facades\Schedule;
 |
 */
 
+Schedule::command('lessons:send-live-reminders')
+    ->everyMinute()
+    ->withoutOverlapping(5)
+    ->description('Queue 24h and 1h live lesson reminders');
+
 Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3 --backoff=30')
     ->everyMinute()
     ->withoutOverlapping(5)
