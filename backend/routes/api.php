@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\SettingsController;
+use App\Http\Controllers\Api\V1\TeacherController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // Public catalog
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('teachers/{teacher}', [TeacherController::class, 'show'])->whereNumber('teacher')->name('teachers.show');
 
     // Open to guests for free previews; LessonPolicy decides the rest.
     Route::get('lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
