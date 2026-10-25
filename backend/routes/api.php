@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
+use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('courses/{course}/enroll', [EnrollmentController::class, 'store'])->name('courses.enroll');
         Route::get('me/courses', [EnrollmentController::class, 'index'])->name('me.courses');
+        Route::get('me/profile', [ProfileController::class, 'show'])->name('me.profile');
+        Route::post('me/profile', [ProfileController::class, 'update'])->name('me.profile.update');
 
         Route::middleware('throttle:60,1')->group(function () {
             Route::post('lessons/{lesson}/progress', [LessonProgressController::class, 'store'])->name('lessons.progress');
