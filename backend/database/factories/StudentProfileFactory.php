@@ -21,7 +21,7 @@ class StudentProfileFactory extends Factory
         return [
             'user_id' => User::factory(),
             'grade_level' => fake()->randomElement(['Grade 10', 'Grade 11', 'Grade 12']),
-            'parent_phone' => fake()->optional()->numerify('01#########'),
+            'parent_phone' => fake()->optional()->numerify('01'.fake()->randomElement(['0', '1', '2', '5']).'########'),
         ];
     }
 }
