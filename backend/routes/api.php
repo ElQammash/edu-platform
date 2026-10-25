@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\GradesController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
+use App\Http\Controllers\Api\V1\LiveSessionController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\QuizAttemptController;
@@ -48,6 +49,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     // Open to guests for free previews; LessonPolicy decides the rest.
     Route::get('lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
+    Route::get('lessons/{lesson}/calendar.ics', [LiveSessionController::class, 'calendar'])->name('lessons.calendar');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('courses/{course}/enroll', [EnrollmentController::class, 'store'])->name('courses.enroll');
@@ -73,6 +75,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('attempts/{attempt}/submit', [QuizAttemptController::class, 'submit'])->name('attempts.submit');
 
         Route::get('me/grades', [GradesController::class, 'index'])->name('me.grades');
+
+        Route::post('lessons/{lesson}/join', [LiveSessionController::class, 'join'])
+            ->middleware('throttle:30,1')
+            ->name('lessons.join');
+        Route::get('me/live-sessions', [LiveSessionController::class, 'upcoming'])->name('me.live-sessions');
 
         Route::get('me/notifications', [NotificationController::class, 'index'])->name('me.notifications');
         Route::post('me/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('me.notifications.read-all');

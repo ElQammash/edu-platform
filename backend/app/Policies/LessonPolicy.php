@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Lesson;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 /**
  * Who can open a lesson's content (video, text, meeting link).
@@ -57,6 +58,31 @@ class LessonPolicy
     public function delete(User $user, Lesson $lesson): bool
     {
         return $this->update($user, $lesson);
+    }
+
+    /**
+     * Get the meeting link of a live lesson: enrolled students and staff,
+     * only from 15 minutes before the start until the end.
+     */
+    public function join(User $user, Lesson $lesson): Response
+    {
+        $course = $lesson->course();
+
+        if (! ($user->isAdmin() || $user->teaches($course) || ($user->isStudent() && $user->isEnrolledIn($course)))) {
+            return Response::deny();
+        }
+
+        if (! $lesson->isLive() || blank($lesson->meeting_url)) {
+            return Response::denyAsNotFound();
+        }
+
+        if ($lesson->liveState() === Lesson::LIVE_ENDED) {
+            return Response::deny(__('live.errors.ended'));
+        }
+
+        return $lesson->canJoinNow()
+            ? Response::allow()
+            : Response::deny(__('live.errors.not_open_yet', ['minutes' => Lesson::JOIN_OPENS_MINUTES_BEFORE]));
     }
 
     /**
