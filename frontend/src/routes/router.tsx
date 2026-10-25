@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import MainLayout from '@/layouts/MainLayout'
 import AssignmentPage from '@/pages/AssignmentPage'
+import AttemptPage from '@/pages/AttemptPage'
 import CatalogPage from '@/pages/CatalogPage'
 import CourseDetailsPage from '@/pages/CourseDetailsPage'
 import HomePage from '@/pages/HomePage'
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
           { path: paths.myCourses, element: <MyCoursesPage /> },
           { path: paths.assignment(), element: <AssignmentPage /> },
           { path: paths.quiz(), element: <QuizPage /> },
+          { path: paths.attempt(), element: <AttemptPage /> },
           { path: paths.myGrades, element: <MyGradesPage /> },
           { path: paths.profile, element: <ProfilePage /> },
         ],
