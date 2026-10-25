@@ -102,6 +102,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(LessonProgress::class, 'student_id');
     }
 
+    /**
+     * @return HasMany<Submission, $this>
+     */
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class, 'student_id');
+    }
+
     public function isEnrolledIn(Course $course): bool
     {
         return $this->enrollments()->where('course_id', $course->id)->exists();
