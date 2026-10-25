@@ -7,5 +7,24 @@
     "label": "اللغة",
     "ar": "العربية",
     "en": "English"
+  },
+  "pages": {
+    "comingSoon": "الصفحة دي هتتضاف في مرحلة جاية.",
+    "home": { "title": "الرئيسية" },
+    "catalog": { "title": "الكورسات" },
+    "courseDetails": { "title": "تفاصيل الكورس" },
+    "myCourses": { "title": "كورساتي" },
+    "lesson": { "title": "الدرس" },
+    "assignment": { "title": "الواجب" },
+    "quiz": { "title": "الاختبار" },
+    "myGrades": { "title": "درجاتي" },
+    "profile": { "title": "الملف الشخصي" },
+    "login": { "title": "تسجيل الدخول" },
+    "register": { "title": "إنشاء حساب" },
+    "notFound": {
+      "title": "الصفحة غير موجودة",
+      "description": "الصفحة اللي بتدور عليها مش موجودة.",
+      "backHome": "الرجوع للرئيسية"
+    }
   }
 }

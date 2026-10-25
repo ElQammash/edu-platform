@@ -7,5 +7,24 @@
     "label": "Language",
     "ar": "العربية",
     "en": "English"
+  },
+  "pages": {
+    "comingSoon": "This page is coming in a later phase.",
+    "home": { "title": "Home" },
+    "catalog": { "title": "Course catalog" },
+    "courseDetails": { "title": "Course details" },
+    "myCourses": { "title": "My courses" },
+    "lesson": { "title": "Lesson" },
+    "assignment": { "title": "Assignment" },
+    "quiz": { "title": "Quiz" },
+    "myGrades": { "title": "My grades" },
+    "profile": { "title": "Profile" },
+    "login": { "title": "Log in" },
+    "register": { "title": "Create an account" },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist.",
+      "backHome": "Back to home"
+    }
   }
 }
