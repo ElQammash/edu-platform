@@ -27,7 +27,7 @@ class LessonCommentResource extends JsonResource
         $user = $request->user();
         $deleted = $this->trashed();
 
-        return [
+        $data = [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
             'body' => $deleted ? null : $this->body,
@@ -48,11 +48,17 @@ class LessonCommentResource extends JsonResource
                 'resolve' => $this->isQuestion() && ! $deleted && (bool) $user?->can('resolve', $this->resource),
                 'accept' => ! $this->isQuestion() && ! $deleted && (bool) $user?->can('accept', $this->resource),
             ],
-            $this->mergeWhen($this->isQuestion(), fn (): array => [
-                'resolved_at' => $this->resolved_at?->toIso8601String(),
-                'accepted_reply_id' => $this->accepted_reply_id,
-                'replies' => self::collection($this->whenLoaded('replies')),
-            ]),
+        ];
+
+        if (! $this->isQuestion()) {
+            return $data;
+        }
+
+        return [
+            ...$data,
+            'resolved_at' => $this->resolved_at?->toIso8601String(),
+            'accepted_reply_id' => $this->accepted_reply_id,
+            'replies' => self::collection($this->whenLoaded('replies')),
         ];
     }
 

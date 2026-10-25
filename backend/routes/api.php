@@ -97,7 +97,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::post('comments/{comment}/accept', [LessonCommentController::class, 'accept'])->name('comments.accept');
         });
 
-        Route::get('me/notifications',[NotificationController::class, 'index'])->name('me.notifications');
+        Route::get('me/notifications', [NotificationController::class, 'index'])->name('me.notifications');
         Route::post('me/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('me.notifications.read-all');
         Route::post('me/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('me.notifications.read');
 
