@@ -25,7 +25,7 @@ class CourseResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'title' => $this->title,
-            'excerpt' => Str::limit(strip_tags((string) $this->description), 160),
+            'excerpt' => $this->excerpt(),
             'description' => $this->when($this->relationLoaded('sections'), $this->description),
             'thumbnail_url' => $this->thumbnail ? Storage::disk('public')->url($this->thumbnail) : null,
             'price' => (float) $this->price,
@@ -45,5 +45,16 @@ class CourseResource extends JsonResource
                 return $enrollment instanceof Enrollment ? new EnrollmentResource($enrollment) : null;
             }),
         ];
+    }
+
+    /**
+     * Plain-text start of the Markdown description (no "#", "-" or "**").
+     */
+    private function excerpt(): string
+    {
+        $html = Str::markdown((string) $this->description, ['html_input' => 'strip']);
+        $text = preg_replace('/\s+/u', ' ', strip_tags($html)) ?? '';
+
+        return Str::limit(trim(html_entity_decode($text)), 160);
     }
 }

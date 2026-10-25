@@ -49,6 +49,15 @@ class CourseCatalogTest extends TestCase
             ->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $arabicFree->id);
     }
 
+    public function test_excerpt_is_plain_text_from_the_markdown_description(): void
+    {
+        Course::factory()->create(['description' => "## Intro\n\n- **Fast** & clear\n\n<script>alert(1)</script>\n\nMore *details*"]);
+
+        // Raw HTML is dropped entirely, Markdown syntax is removed.
+        $this->getJson(route('api.v1.courses.index'))
+            ->assertJsonPath('data.0.excerpt', 'Intro Fast & clear More details');
+    }
+
     public function test_catalog_rejects_invalid_filters(): void
     {
         $this->getJson(route('api.v1.courses.index', ['language' => 'fr']))
