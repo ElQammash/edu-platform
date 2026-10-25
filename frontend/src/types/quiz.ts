@@ -59,7 +59,15 @@ export interface AttemptQuestion {
 export interface Attempt extends AttemptSummary {
   server_time: string
   answers_revealed: boolean
-  quiz: { id: number; title: string; pass_score: number; lesson_id: number; course_slug: string }
+  quiz: {
+    id: number
+    title: string
+    pass_score: number
+    due_at: string | null
+    show_answers: 'after_grading' | 'after_due_date' | 'never'
+    lesson_id: number
+    course_slug: string
+  }
   questions: AttemptQuestion[]
 }
 
