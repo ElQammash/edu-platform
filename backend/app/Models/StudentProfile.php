@@ -14,10 +14,11 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property string|null $grade_level
  * @property string|null $parent_phone
+ * @property string|null $avatar
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['user_id', 'grade_level', 'parent_phone'])]
+#[Fillable(['user_id', 'grade_level', 'parent_phone', 'avatar'])]
 class StudentProfile extends Model
 {
     /** @use HasFactory<StudentProfileFactory> */
