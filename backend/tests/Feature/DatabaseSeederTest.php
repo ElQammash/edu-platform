@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LessonType;
 use App\Models\Assignment;
+use App\Models\Attendance;
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Lesson;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\Submission;
@@ -40,7 +43,10 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(2, QuizAttempt::count());
         $this->assertSame(1, QuizAttempt::whereNotNull('graded_at')->count());
         $this->assertEquals(3, QuizAttempt::whereNotNull('graded_at')->value('score')); // 2 + 0 + 1 of 5 points: 60%, exactly the pass mark
-        $this->assertSame(50, Enrollment::whereHas('student', fn ($q) => $q->where('email', 'student1@edu-platform.test'))
+        $this->assertSame(6, Lesson::where('type', LessonType::Live)->count());
+        $this->assertSame(2, Attendance::count());
+        // 4 of the 10 physics lessons done (3 lessons + the attended live session).
+        $this->assertSame(40, Enrollment::whereHas('student', fn ($q) => $q->where('email', 'student1@edu-platform.test'))
             ->whereHas('course', fn ($q) => $q->where('slug', 'physics-secondary-3'))
             ->value('progress_percent'));
     }

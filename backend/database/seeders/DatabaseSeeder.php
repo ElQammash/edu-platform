@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 DemoCourseSeeder::class,
                 DemoAssignmentSeeder::class,
                 DemoQuizSeeder::class,
+                DemoLiveLessonSeeder::class,
             ]);
         }
     }
