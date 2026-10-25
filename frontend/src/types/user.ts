@@ -3,6 +3,7 @@ export type Role = 'admin' | 'teacher' | 'student'
 export interface StudentProfile {
   grade_level: string | null
   parent_phone: string | null
+  avatar_url: string | null
 }
 
 export interface TeacherProfile {
