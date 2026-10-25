@@ -18,7 +18,7 @@ class EnrollmentService
     {
         return Enrollment::firstOrCreate(
             ['student_id' => $student->id, 'course_id' => $course->id],
-            ['payment_status' => PaymentStatus::Free, 'enrolled_at' => now()],
+            ['payment_status' => PaymentStatus::Free, 'enrolled_at' => now(), 'progress_percent' => 0],
         );
     }
 
@@ -41,6 +41,7 @@ class EnrollmentService
                 'payment_status' => $course->isFree() ? PaymentStatus::Free : PaymentStatus::Manual,
                 'enrolled_by' => $admin->id,
                 'enrolled_at' => now(),
+                'progress_percent' => 0,
             ],
         );
     }
