@@ -2,10 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
-});
-
-require __DIR__.'/settings.php';
+// The public site lives in the React app (frontend/). The backend only serves
+// the API under /api/v1 and the Filament panels.
+Route::get('/', fn () => response()->json([
+    'name' => config('app.name'),
+    'api' => url('/api/v1'),
+]))->name('home');
