@@ -106,6 +106,16 @@ class Lesson extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    /**
+     * Questions and replies (see LessonComment::isQuestion).
+     *
+     * @return HasMany<LessonComment, $this>
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(LessonComment::class);
+    }
+
     public function isLive(): bool
     {
         return $this->type === LessonType::Live && $this->live_at !== null;
