@@ -32,6 +32,8 @@ void i18n
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: LANGUAGE_STORAGE_KEY,
       caches: ['localStorage'],
+      // "ar-EG" -> "ar", "en-US" -> "en", so <html lang> and storage hold our codes.
+      convertDetectedLanguage: (language: string) => language.split('-')[0],
     },
     interpolation: {
       // React already escapes rendered values.
