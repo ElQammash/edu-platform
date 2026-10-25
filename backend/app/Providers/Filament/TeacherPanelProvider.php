@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Shared\PanelLanguage;
 use App\Filament\Teacher\Pages\EditTeacherProfile;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -28,7 +29,7 @@ class TeacherPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        return PanelLanguage::configure($panel
             ->id('teacher')
             ->path('teacher')
             ->brandName(fn (): string => __('panels.teacher.brand'))
@@ -59,6 +60,6 @@ class TeacherPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ]));
     }
 }
