@@ -46,7 +46,7 @@ export function CourseCard({ course, progress }: { course: Course; progress?: nu
           {course.lessons_count !== undefined && (
             <p className="mt-auto flex items-center gap-1 text-xs text-muted-foreground">
               <BookOpen className="size-3.5" />
-              {t('courses.card.lessons', { value: format.number(course.lessons_count) })}
+              {t('courses.card.lessons', { count: course.lessons_count, value: format.number(course.lessons_count) })}
             </p>
           )}
         </CardContent>

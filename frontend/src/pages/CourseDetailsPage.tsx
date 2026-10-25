@@ -54,7 +54,7 @@ export default function CourseDetailsPage() {
             <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-1.5">
                 <BookOpen className="size-4" />
-                {t('courses.details.lessons', { value: format.number(course.lessons_count ?? 0) })}
+                {t('courses.details.lessons', { count: course.lessons_count ?? 0, value: format.number(course.lessons_count ?? 0) })}
               </li>
               {!!course.total_duration_seconds && (
                 <li className="flex items-center gap-1.5">
@@ -64,7 +64,7 @@ export default function CourseDetailsPage() {
               )}
               <li className="flex items-center gap-1.5">
                 <Users className="size-4" />
-                {t('courses.details.students', { value: format.number(course.students_count ?? 0) })}
+                {t('courses.details.students', { count: course.students_count ?? 0, value: format.number(course.students_count ?? 0) })}
               </li>
             </ul>
           </header>

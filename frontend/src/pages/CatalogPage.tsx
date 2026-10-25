@@ -147,7 +147,7 @@ export default function CatalogPage() {
       ) : (
         <>
           <p className="text-sm text-muted-foreground">
-            {t('courses.catalog.results', { value: format.number(data.meta.total) })}
+            {t('courses.catalog.results', { count: data.meta.total, value: format.number(data.meta.total) })}
           </p>
           <div className={isPlaceholderData ? 'opacity-60 transition-opacity' : undefined}>
             <CourseGrid>

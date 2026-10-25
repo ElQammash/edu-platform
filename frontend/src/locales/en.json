@@ -21,10 +21,18 @@
   },
   "courses": {
     "free": "Free",
-    "language": { "ar": "Arabic", "en": "English" },
-    "type": { "recorded": "Recorded", "live": "Live", "hybrid": "Recorded + live" },
+    "language": {
+      "ar": "Arabic",
+      "en": "English"
+    },
+    "type": {
+      "recorded": "Recorded",
+      "live": "Live",
+      "hybrid": "Recorded + live"
+    },
     "card": {
-      "lessons": "{{value}} lessons",
+      "lessons_one": "{{value}} lesson",
+      "lessons_other": "{{value}} lessons",
       "by": "by {{name}}"
     },
     "catalog": {
@@ -35,15 +43,18 @@
       "allPrices": "Any price",
       "freeOnly": "Free",
       "paidOnly": "Paid",
-      "results": "{{value}} courses",
+      "results_one": "{{value}} course",
+      "results_other": "{{value}} courses",
       "empty": "No courses match your filters.",
       "clearFilters": "Clear filters"
     },
     "details": {
       "about": "About this course",
       "curriculum": "Course content",
-      "lessons": "{{value}} lessons",
-      "students": "{{value}} students",
+      "lessons_one": "{{value}} lesson",
+      "lessons_other": "{{value}} lessons",
+      "students_one": "{{value}} student",
+      "students_other": "{{value}} students",
       "taughtIn": "Taught in {{language}}",
       "freePreview": "Free preview",
       "locked": "Locked",
@@ -139,18 +150,42 @@
   },
   "pages": {
     "comingSoon": "This page is coming in a later phase.",
-    "home": { "title": "Home" },
-    "catalog": { "title": "Course catalog" },
-    "courseDetails": { "title": "Course details" },
-    "myCourses": { "title": "My courses" },
-    "lesson": { "title": "Lesson" },
-    "assignment": { "title": "Assignment" },
-    "quiz": { "title": "Quiz" },
-    "myGrades": { "title": "My grades" },
-    "profile": { "title": "Profile" },
-    "teacher": { "title": "Teacher" },
-    "login": { "title": "Log in" },
-    "register": { "title": "Create an account" },
+    "home": {
+      "title": "Home"
+    },
+    "catalog": {
+      "title": "Course catalog"
+    },
+    "courseDetails": {
+      "title": "Course details"
+    },
+    "myCourses": {
+      "title": "My courses"
+    },
+    "lesson": {
+      "title": "Lesson"
+    },
+    "assignment": {
+      "title": "Assignment"
+    },
+    "quiz": {
+      "title": "Quiz"
+    },
+    "myGrades": {
+      "title": "My grades"
+    },
+    "profile": {
+      "title": "Profile"
+    },
+    "teacher": {
+      "title": "Teacher"
+    },
+    "login": {
+      "title": "Log in"
+    },
+    "register": {
+      "title": "Create an account"
+    },
     "notFound": {
       "title": "Page not found",
       "description": "The page you are looking for does not exist.",
