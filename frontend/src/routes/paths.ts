@@ -7,6 +7,7 @@ export const paths = {
   lesson: (lessonId: string | number = ':lessonId') => `/lessons/${lessonId}`,
   assignment: (assignmentId: string | number = ':assignmentId') => `/assignments/${assignmentId}`,
   quiz: (quizId: string | number = ':quizId') => `/quizzes/${quizId}`,
+  teacher: (teacherId: string | number = ':teacherId') => `/teachers/${teacherId}`,
   myGrades: '/my-grades',
   profile: '/profile',
   login: '/login',
