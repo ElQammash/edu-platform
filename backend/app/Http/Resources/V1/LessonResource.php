@@ -47,6 +47,9 @@ class LessonResource extends JsonResource
             'is_free_preview' => $this->is_free_preview,
             'section' => ['id' => $this->section->id, 'title' => $this->section->title],
             'course' => ['id' => $course->id, 'slug' => $course->slug, 'title' => $course->title],
+            'assignment' => $this->whenLoaded('assignment', fn () => $this->assignment
+                ? new AssignmentSummaryResource($this->assignment)
+                : null),
             'previous_lesson_id' => $this->neighbours['previous'],
             'next_lesson_id' => $this->neighbours['next'],
             'progress' => $this->whenLoaded('progress', function () {

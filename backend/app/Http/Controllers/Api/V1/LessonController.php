@@ -28,6 +28,13 @@ class LessonController extends Controller
             $lesson->load(['progress' => fn ($q) => $q->where('student_id', $user->id)]);
         }
 
+        // Only those who can open the assignment see it (not free-preview guests).
+        // Queried without touching the relation, so it is not serialized otherwise.
+        $assignment = $lesson->assignment()->first()?->setRelation('lesson', $lesson);
+        if ($user && $assignment && Gate::forUser($user)->allows('view', $assignment)) {
+            $lesson->setRelation('assignment', $assignment);
+        }
+
         $ids = $lesson->course()->orderedLessonIds();
         $position = array_search($lesson->id, $ids, true);
 
