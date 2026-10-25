@@ -33,7 +33,9 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Private files (submissions) are only served by our own controllers after
+            // a policy check, not by Laravel's signed local-file route.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],
