@@ -85,6 +85,13 @@ class GradeCalculator
      */
     public function quizGrade(Quiz $quiz, Collection $attempts): ComponentGrade
     {
+        // The best attempt counts, so while any attempt still waits for essay
+        // grading the grade is not final: show it as pending, not as a number
+        // that may change.
+        if ($attempts->contains(fn (QuizAttempt $attempt) => $attempt->isSubmitted() && ! $attempt->isGraded())) {
+            return new ComponentGrade(ComponentGrade::PENDING);
+        }
+
         $best = $attempts
             ->filter(fn (QuizAttempt $attempt) => $attempt->isGraded())
             ->sortByDesc(fn (QuizAttempt $attempt) => $attempt->percent())
@@ -92,10 +99,6 @@ class GradeCalculator
 
         if ($best) {
             return ComponentGrade::graded((float) $best->score, (float) $best->max_score);
-        }
-
-        if ($attempts->contains(fn (QuizAttempt $attempt) => $attempt->isSubmitted())) {
-            return new ComponentGrade(ComponentGrade::PENDING);
         }
 
         return new ComponentGrade($quiz->isPastDue() ? ComponentGrade::MISSING : ComponentGrade::OPEN);

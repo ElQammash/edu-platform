@@ -87,6 +87,19 @@ class GradeCalculatorTest extends TestCase
         $this->assertSame(90.0, app(GradeCalculator::class)->forCourse($this->student, $this->course)->percent);
     }
 
+    public function test_a_quiz_with_an_attempt_still_being_graded_is_pending(): void
+    {
+        $quiz = Quiz::factory()->for($this->lesson(1))->create(['max_attempts' => 2]);
+        $this->gradedAttempt($quiz, 0, 10);
+        QuizAttempt::factory()->create(['quiz_id' => $quiz->id, 'student_id' => $this->student->id, 'submitted_at' => now()]);
+
+        $grade = app(GradeCalculator::class)->forCourse($this->student, $this->course);
+
+        // The second attempt may beat the first; no number until it is graded.
+        $this->assertSame(ComponentGrade::PENDING, $grade->lessons[0]->quiz?->status);
+        $this->assertNull($grade->percent);
+    }
+
     public function test_missing_work_past_its_due_date_counts_as_zero(): void
     {
         $done = $this->lesson(1);
