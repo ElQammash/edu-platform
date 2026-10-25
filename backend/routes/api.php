@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\GradesController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\LessonProgressController;
 use App\Http\Controllers\Api\V1\LiveSessionController;
+use App\Http\Controllers\Api\V1\LocaleController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\QuizAttemptController;
@@ -54,6 +55,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('courses/{course}/enroll', [EnrollmentController::class, 'store'])->name('courses.enroll');
         Route::get('me/courses', [EnrollmentController::class, 'index'])->name('me.courses');
+        Route::put('me/locale', [LocaleController::class, 'update'])->name('me.locale');
         Route::get('me/profile', [ProfileController::class, 'show'])->name('me.profile');
         Route::post('me/profile', [ProfileController::class, 'update'])->name('me.profile.update');
 
