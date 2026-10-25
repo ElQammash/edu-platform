@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Teacher\Pages\EditTeacherProfile;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -32,6 +33,7 @@ class TeacherPanelProvider extends PanelProvider
             ->path('teacher')
             ->brandName(fn (): string => __('panels.teacher.brand'))
             ->login()
+            ->profile(EditTeacherProfile::class, isSimple: false)
             ->colors([
                 'primary' => Color::Indigo,
             ])
