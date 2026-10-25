@@ -74,6 +74,14 @@ class Lesson extends Model
         return $this->hasOne(Assignment::class);
     }
 
+    /**
+     * @return HasOne<Quiz, $this>
+     */
+    public function quiz(): HasOne
+    {
+        return $this->hasOne(Quiz::class);
+    }
+
     public function course(): Course
     {
         return $this->section->course;
