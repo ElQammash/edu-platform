@@ -144,8 +144,31 @@ edu-platform/
   - the strings Filament's own Arabic was missing are added in `lang/vendor`
 - **Teacher profile:** at `/teacher/profile`, teachers edit their name, password, specialty, bio and photo
 
+### Phase 4: quizzes and grades ✅
+- **Quizzes:**
+  - one per lesson, added from the lesson form;
+  - questions are written on the **Quizzes** page: multiple choice (exactly one correct option), true/false, or essay, each with points, in drag-and-drop order;
+  - settings: time limit (optional), pass mark (%), attempts allowed (default 1), due date (optional), when to show answers, and shuffling;
+  - questions lock once anyone has taken the quiz
+- **Taking a quiz:**
+  - the server sets the deadline (start + time limit, never past the due date) and refuses late answers; an attempt left open is closed at its deadline;
+  - the countdown follows the server's clock, answers autosave, and the quiz submits itself at 0;
+  - with shuffling on, each student gets their own question and option order, kept across refreshes
+- **Grading:**
+  - MCQ and true/false are graded on submit;
+  - essays wait in **Grading → Quizzes**, and the student is notified when the teacher finishes them;
+  - with several attempts, the best one counts
+- **Showing answers:**
+  - per quiz: right after grading, after the due date, or never (score only);
+  - the default is after the due date if there is one, otherwise right after grading;
+  - `is_correct`, the correct option and per-question points are never sent before the attempt is submitted and fully graded
+- **Grades** (computed, never stored):
+  - lesson grade = the equal-weighted average of its assignment and quiz percentages (one alone counts fully);
+  - course grade = the average of lesson grades;
+  - missing work counts as **0** once its due date has passed; work not due yet (or with no due date) is left out; "X of Y done" keeps the gaps visible;
+  - the **My grades** page shows it all
+
 ### Roadmap
-4. Quizzes, auto-grading + manual essay grading, lesson and course grades, quiz timer
 5. Live lessons, attendance, reminder notifications via queues
 6. Lesson comments (Q&A), reviews
 7. Payments (Paymob), payment-gated enrollment
@@ -227,7 +250,16 @@ Each course has two sections of video and text lessons, and its first lesson is 
 | تمارين على قواعد الاشتقاق (/50) | قواعد الاشتقاق (Calculus) | in a week | student2: waiting, with a PDF |
 | Solve five linear equations (/25) | Linear equations (Algebra) | none | none: try submitting as student1 |
 
-Sign in to `/teacher` as teacher1 to see the grading queue. Sample quizzes arrive with phase 4.
+Sign in to `/teacher` as teacher1 to see the grading queue.
+
+### Demo quizzes
+
+| Quiz | Lesson (course) | Setup | State |
+| --- | --- | --- | --- |
+| اختبار سريع على التيار الكهربي | التيار الكهربي وشدته (Physics) | 10 min, 3 questions | student1: auto-graded **3/5 (60%, passed)**, answers shown |
+| اختبار قانون أوم | قانون أوم (Physics) | 20 min, MCQ + essay, due in 3 days, answers after the due date | student3: **essay waiting** for teacher1 |
+| اختبار النهايات | النهايات والاتصال (Calculus) | due 2 days ago | student2 never took it: **counts as 0** in My grades |
+| Expressions check | Variables and expressions (Algebra) | untimed, shuffled, 2 attempts | nobody yet: try it as student1 |
 
 ## API (v1)
 
@@ -257,6 +289,12 @@ All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-
 | GET | `/api/v1/me/notifications` | user | Latest 20 notifications plus `meta.unread_count` |
 | POST | `/api/v1/me/notifications/{id}/read` | user | Mark one as read |
 | POST | `/api/v1/me/notifications/read-all` | user | Mark all as read |
+| GET | `/api/v1/quizzes/{id}` | enrolled student, teacher, admin | Rules, the student's attempts, `can_start` and why not |
+| POST | `/api/v1/quizzes/{id}/attempts` | enrolled student | Start an attempt, or resume the open one (201 / 200) |
+| GET | `/api/v1/attempts/{id}` | its student, course teacher, admin | Questions in the attempt's order (while open) or the result; correctness only when revealed |
+| PUT | `/api/v1/attempts/{id}/answers` | its student, while open | Autosave `answers: [{question_id, option_id?, text_answer?}]` |
+| POST | `/api/v1/attempts/{id}/submit` | its student, while open | Submit and auto-grade |
+| GET | `/api/v1/me/grades` | student | Lesson and course grades per enrolled course, with done/total |
 
 ## Git conventions
 
