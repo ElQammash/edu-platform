@@ -15,6 +15,7 @@ import { useCourse } from '@/features/courses/hooks'
 import { VideoPlayer } from '@/features/lessons/components/VideoPlayer'
 import { useCompleteLesson, useLesson, useRecordProgress } from '@/features/lessons/hooks'
 import { useWatchProgress } from '@/features/lessons/useWatchProgress'
+import { LiveLessonPanel } from '@/features/live/components/LiveLessonPanel'
 import { paths } from '@/routes/paths'
 import type { Lesson } from '@/types/course'
 
@@ -76,14 +77,21 @@ function LessonView({ lesson }: { lesson: Lesson }) {
             </Alert>
           )}
 
-          {lesson.type === 'video' &&
-            (lesson.video ? (
+          {lesson.live && <LiveLessonPanel lesson={lesson} tracksAttendance={tracksProgress} />}
+
+          {/* A video lesson, or a live lesson's recording once it has ended. */}
+          {lesson.video ? (
+            <div className="space-y-2">
+              {lesson.live && <p className="text-sm font-medium">{t('live.recording')}</p>}
               <VideoPlayer video={lesson.video} title={lesson.title} events={playback} />
-            ) : (
+            </div>
+          ) : (
+            lesson.type === 'video' && (
               <div className="flex aspect-video items-center justify-center rounded-lg bg-muted text-muted-foreground">
                 {t('lessons.noVideo')}
               </div>
-            ))}
+            )
+          )}
 
           <header className="space-y-1">
             <p dir="auto" className="text-sm text-muted-foreground">
