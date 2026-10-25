@@ -1,4 +1,5 @@
 import type { AssignmentSummary } from './assignment'
+import type { QuizSummary } from './quiz'
 
 export type CourseLanguage = 'ar' | 'en'
 export type CourseType = 'recorded' | 'live' | 'hybrid'
@@ -89,6 +90,7 @@ export interface Lesson {
   course: { id: number; slug: string; title: string }
   /** Present when the viewer can open it (not for free-preview visitors). */
   assignment?: AssignmentSummary | null
+  quiz?: QuizSummary | null
   previous_lesson_id: number | null
   next_lesson_id: number | null
   /** Present for enrolled students; null before they start. */
