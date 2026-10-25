@@ -8,6 +8,7 @@ import { Markdown } from '@/components/Markdown'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/hooks'
+import { AssignmentCard } from '@/features/assignments/components/AssignmentCard'
 import { CourseCurriculum } from '@/features/courses/components/CourseCurriculum'
 import { useCourse } from '@/features/courses/hooks'
 import { VideoPlayer } from '@/features/lessons/components/VideoPlayer'
@@ -93,6 +94,8 @@ function LessonView({ lesson }: { lesson: Lesson }) {
           </header>
 
           <Markdown>{lesson.content}</Markdown>
+
+          {lesson.assignment && <AssignmentCard assignment={lesson.assignment} />}
 
           <footer className="flex flex-wrap items-center gap-3 border-t pt-5">
             {tracksProgress &&

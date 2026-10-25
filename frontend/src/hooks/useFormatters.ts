@@ -15,11 +15,13 @@ export function useFormatters() {
     const currency = new Intl.NumberFormat(locale, { style: 'currency', currency: 'EGP', maximumFractionDigits: 0 })
     const number = new Intl.NumberFormat(locale)
     const date = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
+    const dateTime = new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' })
 
     return {
       price: (amount: number) => (amount === 0 ? t('courses.free') : currency.format(amount)),
       number: (value: number) => number.format(value),
       date: (iso: string) => date.format(new Date(iso)),
+      dateTime: (iso: string) => dateTime.format(new Date(iso)),
       /** "1 h 20 min" style; null/0 gives an empty string. */
       duration: (seconds: number | null | undefined) => {
         if (!seconds) return ''
