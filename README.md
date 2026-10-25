@@ -44,16 +44,18 @@ This is a monorepo with two apps:
 edu-platform/
 ├── backend/                       Laravel 13
 │   ├── app/
-│   │   ├── Enums/                 Role enum
+│   │   ├── Enums/                 roles, course/lesson types, statuses, settings keys
 │   │   ├── Filament/Admin/        admin panel resources
 │   │   ├── Filament/Teacher/      teacher panel resources
+│   │   ├── Filament/Shared/       course/section/lesson UI used by both panels
 │   │   ├── Http/Controllers/Api/V1/
 │   │   ├── Http/Middleware/       SetLocale (Accept-Language)
 │   │   ├── Http/Requests/Api/V1/  validation
 │   │   ├── Http/Resources/V1/     JSON shape
 │   │   ├── Models/
-│   │   ├── Policies/              (from phase 2)
-│   │   └── Services/              business logic (registration, grading, …)
+│   │   ├── Policies/              course, section and lesson access
+│   │   ├── Services/              business logic (enrollment, progress, settings, …)
+│   │   └── Support/VideoUrl.php   Bunny / YouTube / Vimeo link parsing
 │   ├── database/                  migrations, factories, seeders
 │   ├── lang/{ar,en}/              backend translations
 │   ├── routes/api.php             /api/v1
@@ -62,7 +64,7 @@ edu-platform/
 │   └── src/
 │       ├── api/                   axios client (Sanctum-ready)
 │       ├── components/ui/         shadcn/ui
-│       ├── features/              auth, courses, lessons, assignments, quizzes
+│       ├── features/              auth, courses, lessons, profile, teachers, …
 │       ├── hooks/  layouts/  pages/  routes/  types/
 │       └── locales/               ar.json, en.json
 └── .github/workflows/tests.yml    CI for both apps
@@ -82,6 +84,8 @@ edu-platform/
 | UI | — | Tailwind CSS 4, shadcn/ui (RTL mode) |
 | i18n | Laravel lang files (ar, en) | react-i18next (ar, en) |
 | Database | MySQL / MariaDB | — |
+| Content | Markdown (descriptions, lesson notes) | react-markdown (no raw HTML) |
+| Video | External links only: Bunny Stream, YouTube, Vimeo | YouTube IFrame API, `@vimeo/player`, `player.js` (Bunny) |
 | Tests | PHPUnit feature tests, Larastan, Pint | oxlint, `tsc` |
 
 ## Features
@@ -93,10 +97,31 @@ edu-platform/
 - Admin panel: manage users and create teachers with their profiles
 - Teacher panel, open only to approved teachers
 - React app: routing, Arabic/English with full RTL, language switcher, login/register pages that show the server's validation errors under each field, protected student routes
-- Placeholder pages for the catalog, course details, my courses, lesson player, assignment, quiz, my grades and profile
+- Placeholder pages for the pages of later phases
+
+### Phase 2: courses, lessons, enrollments and progress ✅
+- **Courses** with a teaching language (ar/en), type (recorded, live, hybrid), price in EGP and draft/published status; **sections** and **lessons** (video or text, optional free preview) ordered by drag and drop
+- **Videos are links, never uploads.** Bunny Stream, YouTube and Vimeo links are validated and converted to embeds
+- **Enrollment:**
+  - free courses: students enroll themselves in one click;
+  - paid courses: the "Contact us" button opens WhatsApp with a message naming the course (and the student's email), and the admin enrolls the student manually (`payment_status = manual`) until Paymob arrives in phase 7
+- **Progress:** the player reports how far the student watched. A video lesson completes at 90%, and every lesson has a "mark as complete" button. Course progress is shown as a percentage
+- **Access rules (policies):**
+  - the course curriculum is public, but lesson content and video links are only sent to enrolled students, the course teacher and admins;
+  - free previews are open to everyone;
+  - teachers can only reach their own courses
+- **Teacher panel** (`/teacher`): own courses → sections → lessons
+- **Admin panel** (`/admin`): all courses with teacher assignment, manual enrollment, and an **Academy settings** page for the WhatsApp number (falls back to `ACADEMY_WHATSAPP_NUMBER` in `.env`)
+- **React pages:**
+  - course catalog (search plus language, type and price filters, all kept in the URL; pagination);
+  - course details (curriculum, enroll / WhatsApp / continue);
+  - my courses with progress bars;
+  - lesson player with the course outline, previous/next lesson and progress;
+  - student profile with avatar upload;
+  - public teacher profiles
+- Teacher-written text is Markdown, rendered without raw HTML (no script injection); mixed Arabic/English text uses `dir="auto"`
 
 ### Roadmap
-2. Courses, sections, lessons (recorded), enrollments, lesson progress
 3. Assignments, submissions, teacher grading
 4. Quizzes, auto-grading + manual essay grading, lesson and course grades, quiz timer
 5. Live lessons, attendance, reminder notifications via queues
@@ -120,11 +145,13 @@ composer install
 cp .env.example .env          # set DB_* if yours differ (default: root, no password)
 php artisan key:generate
 php artisan migrate --seed
-php artisan storage:link
+php artisan storage:link      # serves uploaded avatars and course thumbnails
 php artisan serve --host=localhost --port=8000
 ```
 
 `composer setup` runs the install, env, key and migrate steps in one go.
+
+Set the academy's WhatsApp number (international format, e.g. `201012345678`) in **Admin → Academy settings**, or as `ACADEMY_WHATSAPP_NUMBER` in `backend/.env`. Until it is set, paid courses say contact details are coming soon.
 
 ### 2. Frontend
 
@@ -155,7 +182,17 @@ cd frontend && npm run lint && npm run build
 | Teacher | `teacher2@edu-platform.test` (Mona Hassan, Mathematics) | http://localhost:8000/teacher |
 | Student | `student1@edu-platform.test` … `student5@edu-platform.test` | http://localhost:5173/login |
 
-Sample courses, lessons, assignments and quizzes are added to the seeders in the phases that create those tables.
+### Demo courses
+
+| Course | Teacher | Language | Price | Enrolled demo students |
+| --- | --- | --- | --- | --- |
+| الفيزياء للصف الثالث الثانوي (`physics-secondary-3`) | Ahmed | Arabic | Free | student1 (50% done), student3 |
+| Physics Olympiad Preparation | Ahmed | English | 750 EGP | student3 (manual) |
+| الرياضيات البحتة - التفاضل والتكامل | Mona | Arabic | 500 EGP | student2 (manual) |
+| Algebra Foundations | Mona | English | Free | student1 |
+| الهندسة الفراغية (draft) | Mona | Arabic | 300 EGP | not visible to students |
+
+Each course has two sections of video and text lessons, and its first lesson is a free preview. The videos are Blender open movies standing in for real lessons. Use student4 or student5 to try enrolling from scratch. Sample assignments and quizzes arrive with phases 3 and 4.
 
 ## API (v1)
 
@@ -168,6 +205,17 @@ All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-
 | POST | `/api/v1/auth/login` | guest | Sign in (`email`, `password`, optional `remember`) |
 | POST | `/api/v1/auth/logout` | user | Sign out |
 | GET | `/api/v1/auth/me` | user | The current user with roles and profile |
+| GET | `/api/v1/settings` | — | Public academy settings (`whatsapp_number`) |
+| GET | `/api/v1/courses` | — | Published courses, paginated. Filters: `search`, `language` (ar/en), `type`, `price` (free/paid), `teacher`, `page` |
+| GET | `/api/v1/courses/{slug}` | — | Course with its curriculum (no lesson content), plus the user's enrollment and completed lessons |
+| POST | `/api/v1/courses/{slug}/enroll` | student | Enroll in a free course (403 with a message for paid courses) |
+| GET | `/api/v1/me/courses` | user | The student's enrollments with progress |
+| GET | `/api/v1/lessons/{id}` | — | Lesson content and embeddable video (free previews, enrolled students, teacher, admin) |
+| POST | `/api/v1/lessons/{id}/progress` | enrolled student | Report `watched_seconds` (and the player's `duration_seconds`); completes at 90% |
+| POST | `/api/v1/lessons/{id}/complete` | enrolled student | Mark the lesson complete |
+| GET | `/api/v1/me/profile` | user | The current user's profile |
+| POST | `/api/v1/me/profile` | student | Update `name`, `grade_level`, `parent_phone`, `avatar` (multipart), `remove_avatar` |
+| GET | `/api/v1/teachers/{id}` | — | Public profile of an approved teacher with their published courses |
 
 ## Git conventions
 
