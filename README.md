@@ -168,8 +168,29 @@ edu-platform/
   - missing work counts as **0** once its due date has passed; work not due yet (or with no due date) is left out; "X of Y done" keeps the gaps visible;
   - the **My grades** page shows it all
 
+### Phase 5: live lessons, attendance and reminders ✅
+- **Live lessons:**
+  - a lesson type with a start time (Cairo time), duration, a Zoom / Google Meet / Microsoft Teams link (https only; hosts in `config/academy.php`) and an optional recording link;
+  - after the session, the recording plays in the regular player
+- **The meeting link is protected:**
+  - it is never in the lesson data or the page;
+  - students get it from **Join**, which only works from 15 minutes before the start until the end;
+  - the lesson page shows the state (upcoming / live now / ended) and countdowns by the server's clock;
+  - an `.ics` file adds the session to Google Calendar, Outlook or an iPhone
+- **Attendance:**
+  - recorded automatically when a student clicks Join during the session;
+  - teachers correct it on the lesson's **Attendance** sheet in the panel;
+  - attending completes the lesson for progress;
+  - it does **not** affect grades: **My grades** shows the attendance percentage next to each course's grade
+- **Reminders:**
+  - in-app and email, 24 hours and 1 hour before each session, in the student's language (saved on the account when they switch language in the app);
+  - each reminder goes out exactly once per scheduled time;
+  - moving a session notifies students and re-arms its reminders; cancelling it (changing the type or deleting it) notifies them too;
+  - all notifications go through the queue
+- **Teacher dashboard:** upcoming sessions, with Start meeting and the attendance sheet
+- **My courses:** lists the student's upcoming live sessions
+
 ### Roadmap
-5. Live lessons, attendance, reminder notifications via queues
 6. Lesson comments (Q&A), reviews
 7. Payments (Paymob), payment-gated enrollment
 
@@ -211,12 +232,67 @@ npm run dev                   # http://localhost:5173
 
 > Open both apps on **`localhost`**, not `127.0.0.1`. Sanctum only treats requests from `localhost:5173` as first-party (see `SANCTUM_STATEFUL_DOMAINS` and `FRONTEND_URL` in `backend/.env`), and cookies are only shared across the same host name.
 
-### 3. Run the checks
+### 3. Queue and scheduler (reminders, notifications, emails)
+
+Notifications and emails are queued, and live lesson reminders are scheduled. Locally, run the scheduler in a second terminal. It runs every task each minute, including a queue worker that empties the queue and exits:
+
+```bash
+cd backend && php artisan schedule:work
+```
+
+To send everything due right now, once: `php artisan schedule:run`. Emails are written to `storage/logs/laravel.log` (`MAIL_MAILER=log`).
+
+### 4. Run the checks
 
 ```bash
 cd backend && composer test    # Pint, Larastan and PHPUnit (in-memory SQLite)
 cd frontend && npm run lint && npm run build
 ```
+
+## Deploying the backend on shared hosting (Hostinger)
+
+Shared hosting allows **one cron job and no long-running processes** (no `queue:work` daemon, no supervisor). The app is built for that:
+
+- `routes/console.php` runs, every minute and in this order:
+  1. `lessons:send-live-reminders`: queues due reminders;
+  2. `queue:work --stop-when-empty --max-time=50 --tries=3`: sends everything queued, then exits.
+
+  Both use `withoutOverlapping()`, so a slow run never starts a second worker. The overlap lock uses the database cache (`CACHE_STORE=database`), so no Redis is needed.
+- Failed jobs are kept for a week (`queue:prune-failed`, daily). Run `php artisan queue:failed` to see them and `php artisan queue:retry all` to retry them.
+
+Setup:
+
+1. Point the domain (or subdomain) at `backend/public`, run `composer install --no-dev --optimize-autoloader`, copy `.env.example` to `.env` and set `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL`, `FRONTEND_URL`, `SANCTUM_STATEFUL_DOMAINS` and the database settings. Then run:
+
+   ```bash
+   php artisan key:generate
+   php artisan migrate --force
+   php artisan storage:link
+   php artisan optimize
+   ```
+
+2. Mail: create a mailbox in hPanel and use it in `.env`:
+
+   ```dotenv
+   MAIL_MAILER=smtp
+   MAIL_SCHEME=smtps
+   MAIL_HOST=smtp.hostinger.com
+   MAIL_PORT=465
+   MAIL_USERNAME=no-reply@your-domain.com
+   MAIL_PASSWORD=your-mailbox-password
+   MAIL_FROM_ADDRESS=no-reply@your-domain.com
+   MAIL_FROM_NAME="Edu Platform"
+   ```
+
+3. Add the **single cron job** in hPanel → Advanced → Cron Jobs, to run every minute. Use the full PHP path from hPanel if `php` is not on the cron PATH:
+
+   ```
+   * * * * * cd /home/USER/domains/your-domain.com/backend && php artisan schedule:run >> /dev/null 2>&1
+   ```
+
+4. Check it: `php artisan schedule:list` shows both tasks, and after a minute the `jobs` table should be empty.
+
+> **Optional, for a future VPS:** with long-running processes allowed, you can run a permanent worker under supervisor (`php artisan queue:work --sleep=3 --tries=3`) and remove the `queue:work` entry from `routes/console.php`. Keep the cron entry for the reminders.
 
 ## Demo accounts
 
@@ -261,6 +337,20 @@ Sign in to `/teacher` as teacher1 to see the grading queue.
 | اختبار النهايات | النهايات والاتصال (Calculus) | due 2 days ago | student2 never took it: **counts as 0** in My grades |
 | Expressions check | Variables and expressions (Algebra) | untimed, shuffled, 2 attempts | nobody yet: try it as student1 |
 
+### Demo live lessons
+
+Times are relative to when you seed, so every state shows right away. Meeting links are placeholders.
+
+| Session | Course | When (from seeding) | State |
+| --- | --- | --- | --- |
+| حصة مراجعة الكهربية (لايف) | Physics (free) | 2 days ago | ended, with a recording; student1 attended, student3 missed it |
+| حصة حل مسائل (شغالة دلوقتي) | Physics | started 10 minutes ago | **live now**: Join works |
+| حصة أسئلة وأجوبة | Physics | in 55 minutes | Join opens 15 minutes before; the 1-hour reminder goes out on the first scheduler run |
+| حصة المراجعة النهائية | Physics | in 23 hours | the 24-hour reminder goes out on the first scheduler run |
+| Problem night #1 / #2 | Physics Olympiad | a week ago / in 6 days | recording + attendance (student3) / upcoming |
+
+After seeding, run `php artisan schedule:run` once and log in as student1. The bell shows the two reminders, and the emails are in `storage/logs/laravel.log`.
+
 ## API (v1)
 
 All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-Language: ar` or `en`.
@@ -294,7 +384,11 @@ All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-
 | GET | `/api/v1/attempts/{id}` | its student, course teacher, admin | Questions in the attempt's order (while open) or the result; correctness only when revealed |
 | PUT | `/api/v1/attempts/{id}/answers` | its student, while open | Autosave `answers: [{question_id, option_id?, text_answer?}]` |
 | POST | `/api/v1/attempts/{id}/submit` | its student, while open | Submit and auto-grade |
-| GET | `/api/v1/me/grades` | student | Lesson and course grades per enrolled course, with done/total |
+| GET | `/api/v1/me/grades` | student | Lesson and course grades per enrolled course, with done/total and live-session attendance |
+| POST | `/api/v1/lessons/{id}/join` | enrolled student, teacher, admin | The meeting link, from 15 minutes before the start until the end (403 otherwise); records the student's attendance |
+| GET | `/api/v1/me/live-sessions` | user | Upcoming and running live sessions in the student's courses |
+| GET | `/api/v1/lessons/{id}/calendar.ics` | — | Calendar file for a live lesson of a published course (no meeting link) |
+| PUT | `/api/v1/me/locale` | user | Save the interface language (`ar` / `en`) on the account, used for emails |
 
 ## Git conventions
 
