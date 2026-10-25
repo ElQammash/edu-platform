@@ -1,0 +1,11 @@
+{
+  "app": {
+    "name": "Edu Platform",
+    "tagline": "Learn from the best teachers in Egypt, recorded or live."
+  },
+  "language": {
+    "label": "Language",
+    "ar": "العربية",
+    "en": "English"
+  }
+}
