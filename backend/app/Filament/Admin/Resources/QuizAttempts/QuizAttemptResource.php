@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Filament\Admin\Resources\QuizAttempts;
+
+use App\Filament\Admin\Resources\QuizAttempts\Pages\ListQuizAttempts;
+use App\Filament\Shared\Grading\QuizAttemptsTable;
+use App\Models\QuizAttempt;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use UnitEnum;
+
+/**
+ * Every quiz attempt waiting for essay grading; admins can grade any.
+ */
+class QuizAttemptResource extends Resource
+{
+    protected static ?string $model = QuizAttempt::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedQuestionMarkCircle;
+
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $slug = 'grading/quizzes';
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('quizzes.grading.group');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('quizzes.grading.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('quizzes.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('quizzes.grading.navigation');
+    }
+
+    public static function table(Table $table): Table
+    {
+        return QuizAttemptsTable::configure($table);
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListQuizAttempts::route('/'),
+        ];
+    }
+}

@@ -11,6 +11,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 /**
  * The teacher's grading queue: submissions for assignments in their own
@@ -26,9 +27,14 @@ class SubmissionResource extends Resource
 
     protected static ?string $slug = 'grading';
 
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('quizzes.grading.group');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return __('grading.navigation');
+        return __('quizzes.grading.assignments_navigation');
     }
 
     public static function getModelLabel(): string

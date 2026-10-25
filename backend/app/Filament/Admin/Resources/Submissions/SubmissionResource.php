@@ -9,6 +9,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 /**
  * Every submission on the platform; admins can grade any of them.
@@ -23,9 +24,14 @@ class SubmissionResource extends Resource
 
     protected static ?string $slug = 'grading';
 
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('quizzes.grading.group');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return __('grading.navigation');
+        return __('quizzes.grading.assignments_navigation');
     }
 
     public static function getModelLabel(): string
