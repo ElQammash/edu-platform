@@ -17,3 +17,8 @@ Route::get('panel-locale/{locale}', PanelLocaleController::class)->name('panel.l
 // Submission files for the Filament panels (the React app uses the API route).
 // The controller authorizes against SubmissionPolicy; guests get a 403.
 Route::get('submissions/{submission}/file', [SubmissionController::class, 'file'])->name('submissions.file');
+
+// Temporary signed links handed out by the API (see SubmissionResource).
+Route::get('submissions/{submission}/download', [SubmissionController::class, 'signedFile'])
+    ->middleware('signed')
+    ->name('submissions.file.signed');

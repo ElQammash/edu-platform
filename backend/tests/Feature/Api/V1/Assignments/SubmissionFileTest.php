@@ -2,12 +2,14 @@
 
 namespace Tests\Feature\Api\V1\Assignments;
 
+use App\Models\Enrollment;
 use App\Models\Submission;
 use App\Models\User;
 use App\Services\SubmissionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class SubmissionFileTest extends TestCase
@@ -65,6 +67,36 @@ class SubmissionFileTest extends TestCase
     {
         $this->get(route('submissions.file', $this->submission))->assertForbidden();
         $this->getJson(route('api.v1.submissions.file', $this->submission))->assertUnauthorized();
+    }
+
+    public function test_the_api_hands_out_a_working_signed_link(): void
+    {
+        Enrollment::factory()->create([
+            'student_id' => $this->submission->student_id,
+            'course_id' => $this->submission->assignment->course()->id,
+        ]);
+
+        $url = $this->actingAs($this->submission->student)
+            ->getJson(route('api.v1.assignments.show', $this->submission->assignment))
+            ->json('data.submission.file.url');
+
+        $this->assertIsString($url);
+
+        // Opened in a new tab: no session needed, the signature authorizes it.
+        $this->app['auth']->forgetGuards();
+        $this->get($url)->assertOk()->assertHeader('Content-Type', 'application/pdf');
+    }
+
+    public function test_signed_links_expire_and_cannot_be_altered(): void
+    {
+        $url = URL::temporarySignedRoute('submissions.file.signed', now()->addMinutes(30), ['submission' => $this->submission->id]);
+
+        // Pointing the link at someone else's submission breaks the signature.
+        $other = Submission::factory()->create();
+        $this->get(str_replace('/'.$this->submission->id.'/', '/'.$other->id.'/', $url))->assertForbidden();
+
+        $this->travel(31)->minutes();
+        $this->get($url)->assertForbidden();
     }
 
     public function test_the_file_is_not_reachable_on_a_public_url(): void

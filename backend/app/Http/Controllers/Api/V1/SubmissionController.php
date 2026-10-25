@@ -57,6 +57,21 @@ class SubmissionController extends Controller
 
         Gate::authorize('view', $submission);
 
+        return $this->streamFile($submission);
+    }
+
+    /**
+     * The same file through a temporary signed link (handed out in
+     * SubmissionResource to users who passed the policy check). The
+     * "signed" middleware rejects expired or altered links.
+     */
+    public function signedFile(Submission $submission): StreamedResponse
+    {
+        return $this->streamFile($submission);
+    }
+
+    private function streamFile(Submission $submission): StreamedResponse
+    {
         abort_unless($submission->hasFile() && Storage::disk(Submission::DISK)->exists((string) $submission->file_path), 404);
 
         /** @var list<string> $allowed */
