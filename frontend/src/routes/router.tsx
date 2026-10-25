@@ -23,6 +23,8 @@ export const router = createBrowserRouter([
       { path: paths.home, element: <HomePage /> },
       { path: paths.catalog, element: <CatalogPage /> },
       { path: paths.courseDetails(), element: <CourseDetailsPage /> },
+      // Free previews are open to guests; the API decides access to the rest.
+      { path: paths.lesson(), element: <LessonPage /> },
 
       // Guests only
       {
@@ -38,7 +40,6 @@ export const router = createBrowserRouter([
         element: <RequireAuth role="student" />,
         children: [
           { path: paths.myCourses, element: <MyCoursesPage /> },
-          { path: paths.lesson(), element: <LessonPage /> },
           { path: paths.assignment(), element: <AssignmentPage /> },
           { path: paths.quiz(), element: <QuizPage /> },
           { path: paths.myGrades, element: <MyGradesPage /> },
