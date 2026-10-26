@@ -8,8 +8,10 @@ use App\Models\Attendance;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\LessonComment;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
+use App\Models\Review;
 use App\Models\Submission;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
@@ -34,7 +36,7 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(8, User::count());
         $this->assertSame(5, Course::count());
         $this->assertSame(4, Course::published()->count());
-        $this->assertSame(5, Enrollment::count());
+        $this->assertSame(7, Enrollment::count());
         $this->assertSame(4, Assignment::count());
         $this->assertSame(4, Submission::count());
         $this->assertSame(3, Submission::pending()->count());
@@ -49,5 +51,16 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(40, Enrollment::whereHas('student', fn ($q) => $q->where('email', 'student1@edu-platform.test'))
             ->whereHas('course', fn ($q) => $q->where('slug', 'physics-secondary-3'))
             ->value('progress_percent'));
+
+        // Q&A: 4 questions (3 waiting for a teacher), 2 replies.
+        $this->assertSame(4, LessonComment::whereNull('parent_id')->count());
+        $this->assertSame(2, LessonComment::whereNotNull('parent_id')->count());
+        $this->assertSame(3, LessonComment::query()->unanswered()->count());
+        // Reviews: physics averages the 5 and the 4; the hidden 1 doesn't count.
+        $this->assertSame(4, Review::count());
+        $physics = Course::where('slug', 'physics-secondary-3')->sole();
+        $this->assertSame('4.50', $physics->rating_avg);
+        $this->assertSame(2, $physics->reviews_count);
+        $this->assertSame('4.33', $physics->teacher->teacherProfile?->rating);
     }
 }
