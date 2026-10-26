@@ -19,9 +19,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Students enrolled in the course. The admin enrolls students who paid
- * outside the platform (payment_status = manual) until online payments
- * arrive in phase 7.
+ * Students enrolled in the course. Students who pay online are enrolled
+ * by their payment (payment_status = paid); the admin enrolls those who
+ * paid outside the platform (manual).
  */
 class EnrollmentsRelationManager extends RelationManager
 {
