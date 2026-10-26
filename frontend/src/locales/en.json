@@ -75,8 +75,7 @@
       "continue": "Continue learning",
       "progress": "{{value}}% complete",
       "loginToEnroll": "Log in to enroll",
-      "paidTitle": "This is a paid course",
-      "paidHint": "Contact us on WhatsApp to pay, and we'll enroll you right away.",
+      "paidHint": "Prefer to pay cash or by transfer? Contact us on WhatsApp and we will enroll you.",
       "contactWhatsApp": "Contact us on WhatsApp",
       "whatsappMessage": "Hello, I'd like to enroll in the course \"{{course}}\".",
       "whatsappMessageWithEmail": "Hello, I'd like to enroll in the course \"{{course}}\". My account email is {{email}}.",
@@ -175,6 +174,11 @@
       "reply": "{{name}} replied in a thread you follow on \"{{lesson}}\".",
       "acceptedMine": "Your question on \"{{lesson}}\" has an accepted answer.",
       "acceptedYours": "Your reply on \"{{lesson}}\" was accepted as the answer."
+    },
+    "payments": {
+      "confirmed": "Payment received for \"{{course}}\". You are enrolled.",
+      "refunded": "{{amount}} was refunded for \"{{course}}\". Your access to the course has ended.",
+      "partiallyRefunded": "{{amount}} was refunded for \"{{course}}\". You keep your access."
     }
   },
   "quizzes": {
@@ -356,6 +360,9 @@
       "title": "Page not found",
       "description": "The page you are looking for does not exist.",
       "backHome": "Back to home"
+    },
+    "myPayments": {
+      "title": "My payments"
     }
   },
   "qa": {
@@ -415,5 +422,43 @@
     "saved": "Thanks! Your review is published.",
     "hidden": "Your review was hidden by the moderators and does not appear on the course page.",
     "sortLabel": "Sort"
+  },
+  "payments": {
+    "currency": "EGP",
+    "pay": "Pay {{amount}}",
+    "loginToPay": "Log in to buy this course",
+    "redirecting": "Opening the payment page…",
+    "methodsHint": "Card or mobile wallet, through Paymob. You are enrolled as soon as the payment is confirmed.",
+    "status": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "failed": "Failed",
+      "expired": "Expired",
+      "partially_refunded": "Partially refunded",
+      "refunded": "Refunded"
+    },
+    "result": {
+      "paidTitle": "Payment received",
+      "paidText": "You paid {{amount}} and you are now enrolled in \"{{course}}\".",
+      "openCourse": "Go to the course",
+      "waitingTitle": "Confirming your payment…",
+      "waitingText": "This usually takes a few seconds. Please keep this page open.",
+      "slowTitle": "Still waiting for confirmation",
+      "slowText": "The payment provider has not confirmed yet. If you paid, you will be enrolled and notified as soon as it does.",
+      "backToCheckout": "Back to the payment page",
+      "failedTitle": "The payment did not go through",
+      "failedText": "No money was taken. You can try again, with another card or a mobile wallet.",
+      "expiredTitle": "This payment expired",
+      "expiredText": "The payment page was not completed in time. Start again to pay.",
+      "refundedTitle": "This payment was refunded",
+      "refundedText": "The full amount went back to you, and the course access ended.",
+      "tryAgain": "Try again",
+      "notFound": "This payment could not be found."
+    },
+    "history": {
+      "subtitle": "Your online payments and refunds.",
+      "empty": "You have not paid for any course yet.",
+      "refunded": "{{amount}} refunded"
+    }
   }
 }
