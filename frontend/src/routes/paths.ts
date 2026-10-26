@@ -10,6 +10,8 @@ export const paths = {
   attempt: (attemptId: string | number = ':attemptId') => `/attempts/${attemptId}`,
   teacher: (teacherId: string | number = ':teacherId') => `/teachers/${teacherId}`,
   myGrades: '/my-grades',
+  myPayments: '/my-payments',
+  payment: (reference = ':reference') => `/payments/${reference}`,
   profile: '/profile',
   login: '/login',
   register: '/register',

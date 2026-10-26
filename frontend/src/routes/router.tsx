@@ -9,7 +9,9 @@ import LessonPage from '@/pages/LessonPage'
 import LoginPage from '@/pages/LoginPage'
 import MyCoursesPage from '@/pages/MyCoursesPage'
 import MyGradesPage from '@/pages/MyGradesPage'
+import MyPaymentsPage from '@/pages/MyPaymentsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import PaymentResultPage from '@/pages/PaymentResultPage'
 import ProfilePage from '@/pages/ProfilePage'
 import QuizPage from '@/pages/QuizPage'
 import RegisterPage from '@/pages/RegisterPage'
@@ -47,6 +49,8 @@ export const router = createBrowserRouter([
           { path: paths.quiz(), element: <QuizPage /> },
           { path: paths.attempt(), element: <AttemptPage /> },
           { path: paths.myGrades, element: <MyGradesPage /> },
+          { path: paths.myPayments, element: <MyPaymentsPage /> },
+          { path: paths.payment(), element: <PaymentResultPage /> },
           { path: paths.profile, element: <ProfilePage /> },
         ],
       },

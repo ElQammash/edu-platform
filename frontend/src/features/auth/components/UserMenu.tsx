@@ -1,4 +1,4 @@
-import { CircleUser, LayoutDashboard, LogOut } from 'lucide-react'
+import { CircleUser, LayoutDashboard, LogOut, Receipt } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
@@ -62,12 +62,20 @@ export function UserMenu() {
             </a>
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem asChild>
-            <Link to={paths.profile}>
-              <CircleUser />
-              {t('pages.profile.title')}
-            </Link>
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem asChild>
+              <Link to={paths.profile}>
+                <CircleUser />
+                {t('pages.profile.title')}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={paths.myPayments}>
+                <Receipt />
+                {t('pages.myPayments.title')}
+              </Link>
+            </DropdownMenuItem>
+          </>
         )}
         <DropdownMenuItem
           disabled={logout.isPending}
