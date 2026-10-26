@@ -190,8 +190,28 @@ edu-platform/
 - **Teacher dashboard:** upcoming sessions, with Start meeting and the attendance sheet
 - **My courses:** lists the student's upcoming live sessions
 
+### Phase 6: lesson Q&A and course reviews ✅
+- **Lesson Q&A:**
+  - shared by everyone in the course, at the bottom of the lesson page;
+  - enrolled students ask; classmates, the teacher and admins reply (one level of replies), and staff replies carry a **Teacher** badge;
+  - authors edit a post for 15 minutes and delete it any time; the teacher and admins delete any post (a deleted question keeps its replies);
+  - the student who asked, or the teacher, marks a question **resolved** or **accepts a reply** as the answer (which resolves it);
+  - filters: all, unresolved, my questions; posting is limited to 10 per minute and 2,000 characters
+- **Teacher Q&A inbox** (panel → Q&A, with a badge):
+  - opens on **unanswered** questions, oldest first; a question counts as answered once the teacher or an admin replies (a classmate's reply doesn't count);
+  - one modal shows the thread, with reply, accept answer and resolve/reopen;
+  - the dashboard lists questions still waiting; admins see every question
+- **Q&A notifications:**
+  - in-app for every new question (to the teacher), reply (to the asker and the others in the thread) and accepted answer; students see them in the app's bell, staff in the panel's bell (polled every 60 seconds);
+  - **email** goes to a student only when the teacher replies to their question or accepts an answer on it;
+  - teachers get no email per question, but one **daily digest** at 08:00 listing their unanswered questions (none sent when there are none, at most one a day)
+- **Course reviews:**
+  - enrolled students who have done **30%** of a course rate it 1–5 stars, with an optional comment (1,000 characters); one review per course, editable and deletable;
+  - the course page shows the average, a 5-to-1 star breakdown and the reviews (first names only), with the teacher's public reply;
+  - catalog cards show the rating, and the catalog sorts by **highest rated**; teacher profiles show the average of all their courses' reviews
+- **Moderation:** teachers reply to reviews of their courses in the panel (one reply each); admins **hide** reviews that break the rules (they disappear and stop counting in the rating) and can show them again
+
 ### Roadmap
-6. Lesson comments (Q&A), reviews
 7. Payments (Paymob), payment-gated enrollment
 
 ## Getting started
@@ -234,13 +254,13 @@ npm run dev                   # http://localhost:5173
 
 ### 3. Queue and scheduler (reminders, notifications, emails)
 
-Notifications and emails are queued, and live lesson reminders are scheduled. Locally, run the scheduler in a second terminal. It runs every task each minute, including a queue worker that empties the queue and exits:
+Notifications and emails are queued, and live lesson reminders and the teachers' daily Q&A digest are scheduled. Locally, run the scheduler in a second terminal. It runs every task each minute, including a queue worker that empties the queue and exits:
 
 ```bash
 cd backend && php artisan schedule:work
 ```
 
-To send everything due right now, once: `php artisan schedule:run`. Emails are written to `storage/logs/laravel.log` (`MAIL_MAILER=log`).
+To send everything due right now, once: `php artisan schedule:run`. To send the Q&A digest without waiting for 08:00: `php artisan qa:send-teacher-digest`, then `php artisan schedule:run`. Emails are written to `storage/logs/laravel.log` (`MAIL_MAILER=log`).
 
 ### 4. Run the checks
 
@@ -255,9 +275,10 @@ Shared hosting allows **one cron job and no long-running processes** (no `queue:
 
 - `routes/console.php` runs, every minute and in this order:
   1. `lessons:send-live-reminders`: queues due reminders;
-  2. `queue:work --stop-when-empty --max-time=50 --tries=3`: sends everything queued, then exits.
+  2. `qa:send-teacher-digest` (daily at 08:00 only): queues each teacher's digest of unanswered questions;
+  3. `queue:work --stop-when-empty --max-time=50 --tries=3`: sends everything queued, then exits.
 
-  Both use `withoutOverlapping()`, so a slow run never starts a second worker. The overlap lock uses the database cache (`CACHE_STORE=database`), so no Redis is needed.
+  All three use `withoutOverlapping()`, so a slow run never starts a second worker. The overlap lock uses the database cache (`CACHE_STORE=database`), so no Redis is needed.
 - Failed jobs are kept for a week (`queue:prune-failed`, daily). Run `php artisan queue:failed` to see them and `php artisan queue:retry all` to retry them.
 
 Setup:
@@ -290,7 +311,7 @@ Setup:
    * * * * * cd /home/USER/domains/your-domain.com/backend && php artisan schedule:run >> /dev/null 2>&1
    ```
 
-4. Check it: `php artisan schedule:list` shows both tasks, and after a minute the `jobs` table should be empty.
+4. Check it: `php artisan schedule:list` shows the tasks, and after a minute the `jobs` table should be empty.
 
 > **Optional, for a future VPS:** with long-running processes allowed, you can run a permanent worker under supervisor (`php artisan queue:work --sleep=3 --tries=3`) and remove the `queue:work` entry from `routes/console.php`. Keep the cron entry for the reminders.
 
@@ -309,13 +330,13 @@ Setup:
 
 | Course | Teacher | Language | Price | Enrolled demo students |
 | --- | --- | --- | --- | --- |
-| الفيزياء للصف الثالث الثانوي (`physics-secondary-3`) | Ahmed | Arabic | Free | student1 (50% done), student3 |
+| الفيزياء للصف الثالث الثانوي (`physics-secondary-3`) | Ahmed | Arabic | Free | student1 (40% done), student3, student4 and student5 (40% each) |
 | Physics Olympiad Preparation | Ahmed | English | 750 EGP | student3 (manual) |
 | الرياضيات البحتة - التفاضل والتكامل | Mona | Arabic | 500 EGP | student2 (manual) |
 | Algebra Foundations | Mona | English | Free | student1 |
 | الهندسة الفراغية (draft) | Mona | Arabic | 300 EGP | not visible to students |
 
-Each course has two sections of video and text lessons, and its first lesson is a free preview. The videos are Blender open movies standing in for real lessons. Use student4 or student5 to try enrolling from scratch.
+Each course has two sections of video and text lessons, and its first lesson is a free preview. The videos are Blender open movies standing in for real lessons. Use student4 or student5 to try enrolling in another course from scratch.
 
 ### Demo assignments
 
@@ -351,6 +372,18 @@ Times are relative to when you seed, so every state shows right away. Meeting li
 
 After seeding, run `php artisan schedule:run` once and log in as student1. The bell shows the two reminders, and the emails are in `storage/logs/laravel.log`.
 
+### Demo Q&A and reviews
+
+| Where | What | Try it |
+| --- | --- | --- |
+| التيار الكهربي وشدته (Physics, lesson 1) | student1's question, answered by teacher1 and **accepted** (resolved); student3's question **waiting** | as student1, ask a question; as teacher1, answer it from **Q&A** in the panel |
+| قانون أوم (Physics) | student4's question, answered only by **a classmate** (student1), so still waiting for the teacher | |
+| Physics Olympiad, first lesson | student3's question, waiting | |
+| Physics reviews | 5★ from student3 (with teacher1's reply), 4★ from student4, and a 1★ spam review from student5 **hidden** by the admin: average **4.5** from 2 reviews | as student1 (40% done), rate the course on its page |
+| Olympiad reviews | 4★ from student3 | |
+
+teacher1 has 3 unanswered questions: run `php artisan qa:send-teacher-digest` and then `php artisan schedule:run`, and the digest email is in `storage/logs/laravel.log`.
+
 ## API (v1)
 
 All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-Language: ar` or `en`.
@@ -363,7 +396,7 @@ All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-
 | POST | `/api/v1/auth/logout` | user | Sign out |
 | GET | `/api/v1/auth/me` | user | The current user with roles and profile |
 | GET | `/api/v1/settings` | — | Public academy settings (`whatsapp_number`) |
-| GET | `/api/v1/courses` | — | Published courses, paginated. Filters: `search`, `language` (ar/en), `type`, `price` (free/paid), `teacher`, `page` |
+| GET | `/api/v1/courses` | — | Published courses, paginated. Filters: `search`, `language` (ar/en), `type`, `price` (free/paid), `teacher`, `sort=rating` (highest rated first), `page`. Each course carries `rating` {average, count} |
 | GET | `/api/v1/courses/{slug}` | — | Course with its curriculum (no lesson content), plus the user's enrollment and completed lessons |
 | POST | `/api/v1/courses/{slug}/enroll` | student | Enroll in a free course (403 with a message for paid courses) |
 | GET | `/api/v1/me/courses` | user | The student's enrollments with progress |
@@ -389,6 +422,14 @@ All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-
 | GET | `/api/v1/me/live-sessions` | user | Upcoming and running live sessions in the student's courses |
 | GET | `/api/v1/lessons/{id}/calendar.ics` | — | Calendar file for a live lesson of a published course (no meeting link) |
 | PUT | `/api/v1/me/locale` | user | Save the interface language (`ar` / `en`) on the account, used for emails |
+| GET | `/api/v1/lessons/{id}/comments` | enrolled student, teacher, admin | The lesson's questions with their replies, newest first (`filter=unresolved|mine`), plus `can_ask` |
+| POST | `/api/v1/lessons/{id}/comments` | enrolled student | Ask a question |
+| POST | `/api/v1/comments/{id}/replies` | enrolled student, teacher, admin | Reply to a question |
+| PATCH / DELETE | `/api/v1/comments/{id}` | author (edit within 15 min); author, teacher or admin (delete) | Edit or delete a post |
+| POST | `/api/v1/comments/{id}/resolve` · `/reopen` | asker, teacher, admin | Mark a question resolved or open again |
+| POST | `/api/v1/comments/{id}/accept` | asker, teacher, admin | Accept a reply as the answer (resolves the question) |
+| GET | `/api/v1/courses/{slug}/reviews` | — | Visible reviews with the average and a star breakdown |
+| GET / PUT / DELETE | `/api/v1/courses/{slug}/review` | student | My review, and whether I can write one; write or rewrite it (enrolled, 30% done); delete it |
 
 ## Git conventions
 
