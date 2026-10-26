@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\V1\SubmissionController;
+use App\Http\Controllers\FakeCheckoutController;
 use App\Http\Controllers\PanelLocaleController;
+use App\Http\Controllers\PaymobController;
 use Illuminate\Support\Facades\Route;
 
 // The public site lives in the React app (frontend/). The backend only serves
@@ -22,3 +24,9 @@ Route::get('submissions/{submission}/file', [SubmissionController::class, 'file'
 Route::get('submissions/{submission}/download', [SubmissionController::class, 'signedFile'])
     ->middleware('signed')
     ->name('submissions.file.signed');
+
+// Where Paymob sends the student's browser after checkout (see PaymobController).
+Route::get('payments/paymob/return', [PaymobController::class, 'return'])->name('payments.paymob.return');
+
+// The fake gateway's test checkout. Refuses to run in production.
+Route::get('payments/fake-checkout/{payment}', FakeCheckoutController::class)->name('payments.fake-checkout');

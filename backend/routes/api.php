@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\LessonProgressController;
 use App\Http\Controllers\Api\V1\LiveSessionController;
 use App\Http\Controllers\Api\V1\LocaleController;
 use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\QuizAttemptController;
 use App\Http\Controllers\Api\V1\QuizController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SubmissionController;
 use App\Http\Controllers\Api\V1\TeacherController;
+use App\Http\Controllers\PaymobController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +55,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     // Open to guests for free previews; LessonPolicy decides the rest.
     Route::get('lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
+    // Paymob's server-to-server callback: no session, verified by its HMAC.
+    Route::post('payments/paymob/callback', [PaymobController::class, 'callback'])
+        ->middleware('throttle:120,1')
+        ->name('payments.paymob.callback');
+
     Route::get('lessons/{lesson}/calendar.ics', [LiveSessionController::class, 'calendar'])->name('lessons.calendar');
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -60,6 +67,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('courses/{course}/review', [ReviewController::class, 'mine'])->name('courses.review');
         Route::put('courses/{course}/review', [ReviewController::class, 'save'])->middleware('throttle:10,1')->name('courses.review.save');
         Route::delete('courses/{course}/review', [ReviewController::class, 'destroy'])->name('courses.review.destroy');
+        Route::post('courses/{course}/checkout', [PaymentController::class, 'checkout'])
+            ->middleware('throttle:5,1')
+            ->name('courses.checkout');
+        Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+        Route::get('me/payments', [PaymentController::class, 'index'])->name('me.payments');
         Route::get('me/courses', [EnrollmentController::class, 'index'])->name('me.courses');
         Route::put('me/locale', [LocaleController::class, 'update'])->name('me.locale');
         Route::get('me/profile', [ProfileController::class, 'show'])->name('me.profile');
