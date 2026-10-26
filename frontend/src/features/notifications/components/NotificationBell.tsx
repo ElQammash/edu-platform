@@ -17,7 +17,8 @@ import { paths } from '@/routes/paths'
 import type { AppNotification } from '@/types/assignment'
 
 /**
- * In-app notifications for students (e.g. "your submission was graded").
+ * In-app notifications ("your submission was graded", "the teacher answered
+ * your question"; for teachers, new questions).
  * The text is built here from the notification's data, so it follows the
  * interface language.
  */
@@ -42,6 +43,10 @@ export function NotificationBell() {
         return navigate(paths.assignment(notification.data.assignment_id))
       case 'live_lesson_cancelled':
         return navigate(paths.courseDetails(notification.data.course_slug))
+      case 'lesson_question':
+      case 'lesson_reply':
+      case 'lesson_answer_accepted':
+        return navigate({ pathname: paths.lesson(notification.data.lesson_id), hash: `question-${notification.data.question_id}` })
       default:
         return navigate(paths.lesson(notification.data.lesson_id))
     }
@@ -72,6 +77,21 @@ export function NotificationBell() {
         })
       case 'live_lesson_cancelled':
         return t('notifications.live.cancelled', { lesson: notification.data.lesson_title })
+      case 'lesson_question':
+        return t('notifications.qa.question', {
+          name: notification.data.author_name,
+          lesson: notification.data.lesson_title,
+          excerpt: notification.data.excerpt,
+        })
+      case 'lesson_reply': {
+        const vars = { name: notification.data.author_name, lesson: notification.data.lesson_title }
+        if (!notification.data.on_my_question) return t('notifications.qa.reply', vars)
+        return notification.data.by_staff ? t('notifications.qa.teacherReplied', vars) : t('notifications.qa.replyOnMine', vars)
+      }
+      case 'lesson_answer_accepted':
+        return notification.data.on_my_question
+          ? t('notifications.qa.acceptedMine', { lesson: notification.data.lesson_title })
+          : t('notifications.qa.acceptedYours', { lesson: notification.data.lesson_title })
     }
   }
 

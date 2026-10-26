@@ -1,3 +1,5 @@
+import type { LessonQaNotificationData } from './qa'
+
 export interface AssignmentSummary {
   id: number
   title: string
@@ -85,4 +87,8 @@ export type AppNotification =
   | (NotificationBase & {
       type: 'live_lesson_reminder' | 'live_lesson_rescheduled' | 'live_lesson_cancelled'
       data: LiveLessonNotificationData
+    })
+  | (NotificationBase & {
+      type: 'lesson_question' | 'lesson_reply' | 'lesson_answer_accepted'
+      data: LessonQaNotificationData
     })
