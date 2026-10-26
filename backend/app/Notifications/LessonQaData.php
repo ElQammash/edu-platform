@@ -2,7 +2,13 @@
 
 namespace App\Notifications;
 
+use App\Filament\Admin\Resources\Questions\QuestionResource as AdminQuestionResource;
+use App\Filament\Teacher\Resources\Questions\QuestionResource as TeacherQuestionResource;
 use App\Models\LessonComment;
+use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification as FilamentNotification;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 
 /**
@@ -31,6 +37,39 @@ final class LessonQaData
             'excerpt' => self::excerpt($comment->body),
             'url' => rtrim((string) config('app.frontend_url'), '/').'/lessons/'.$lesson->id.'#question-'.$questionId,
         ];
+    }
+
+    /**
+     * Staff read their notifications in the Filament panels, which list only
+     * Filament-formatted ones: a title in the recipient's language (the
+     * notification is rendered in it), the excerpt, and a link to the inbox.
+     *
+     * @return array<string, mixed>
+     */
+    public static function forPanel(User $notifiable, string $title, LessonComment $comment): array
+    {
+        $panel = $notifiable->isAdmin() ? 'admin' : 'teacher';
+        $inbox = $panel === 'admin' ? AdminQuestionResource::class : TeacherQuestionResource::class;
+
+        return FilamentNotification::make()
+            ->title($title)
+            ->body(self::excerpt($comment->body))
+            ->icon(Heroicon::OutlinedChatBubbleLeftRight)
+            ->actions([
+                Action::make('open')
+                    ->label(__('qa.actions.thread'))
+                    ->url($inbox::getUrl('index', panel: $panel))
+                    ->markAsRead(),
+            ])
+            ->getDatabaseMessage();
+    }
+
+    /**
+     * Students read theirs in the React app, which builds the text itself.
+     */
+    public static function isForPanel(User $notifiable): bool
+    {
+        return $notifiable->isAdmin() || $notifiable->isTeacher();
     }
 
     public static function excerpt(string $body, int $limit = 140): string

@@ -43,4 +43,16 @@ class LessonQuestionAsked extends Notification implements ShouldQueueAfterCommit
     {
         return LessonQaData::of($this->question);
     }
+
+    /**
+     * Staff see it in the panel's bell, students in the React app.
+     *
+     * @return array<string, mixed>
+     */
+    public function toDatabase(User $notifiable): array
+    {
+        return LessonQaData::isForPanel($notifiable)
+            ? LessonQaData::forPanel($notifiable, (string) __('qa.notifications.question', ['name' => $this->question->user->name, 'lesson' => $this->question->lesson->title]), $this->question)
+            : LessonQaData::of($this->question);
+    }
 }

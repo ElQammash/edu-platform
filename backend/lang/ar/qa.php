@@ -54,6 +54,12 @@ return [
         'empty' => 'تم الرد على كل الأسئلة.',
     ],
 
+    'notifications' => [
+        'question' => 'سؤال جديد من :name في ":lesson"',
+        'reply' => 'رد :name في ":lesson"',
+        'accepted' => 'تم اعتماد ردك في ":lesson" كإجابة',
+    ],
+
     'mail' => [
         'greeting' => 'أهلاً :name،',
         'view_answer' => 'عرض الإجابة',

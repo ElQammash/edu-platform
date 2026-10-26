@@ -48,6 +48,18 @@ class LessonAnswerAccepted extends Notification implements ShouldQueueAfterCommi
         ];
     }
 
+    /**
+     * Staff see it in the panel's bell, students in the React app.
+     *
+     * @return array<string, mixed>
+     */
+    public function toDatabase(User $notifiable): array
+    {
+        return LessonQaData::isForPanel($notifiable)
+            ? LessonQaData::forPanel($notifiable, (string) __('qa.notifications.accepted', ['lesson' => $this->reply->lesson->title]), $this->reply)
+            : $this->toArray($notifiable);
+    }
+
     public function toMail(User $notifiable): MailMessage
     {
         $data = LessonQaData::of($this->reply);

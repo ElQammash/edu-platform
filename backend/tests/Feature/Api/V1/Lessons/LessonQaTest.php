@@ -69,6 +69,31 @@ class LessonQaTest extends TestCase
         });
     }
 
+    public function test_staff_get_panel_notifications_and_students_get_app_data(): void
+    {
+        $this->teacher->update(['locale' => 'ar']);
+
+        $this->actingAs($this->asker)
+            ->postJson(route('api.v1.lessons.comments.store', $this->lesson), ['body' => 'Why is the current constant?'])
+            ->assertCreated();
+        $question = LessonComment::query()->firstOrFail();
+        $this->actingAs($this->teacher)
+            ->postJson(route('api.v1.comments.reply', $question), ['body' => 'Because R is fixed.'])
+            ->assertCreated();
+
+        // Panel format, in the teacher's language, so Filament's bell lists it.
+        $forTeacher = $this->teacher->notifications()->firstOrFail();
+        $this->assertSame('filament', $forTeacher->data['format']);
+        $this->assertStringContainsString('سؤال جديد من', $forTeacher->data['title']);
+        $this->assertStringContainsString('/teacher/questions', $forTeacher->data['actions'][0]['url']);
+
+        // The app's own format for the student's React bell.
+        $forStudent = $this->asker->notifications()->firstOrFail();
+        $this->assertSame(LessonQuestionReplied::TYPE, $forStudent->type);
+        $this->assertSame($question->id, $forStudent->data['question_id']);
+        $this->assertTrue($forStudent->data['by_staff']);
+    }
+
     public function test_outsiders_and_guests_cannot_read_or_ask(): void
     {
         $outsider = User::factory()->student()->create();

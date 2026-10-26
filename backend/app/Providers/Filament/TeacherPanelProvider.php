@@ -34,6 +34,9 @@ class TeacherPanelProvider extends PanelProvider
             ->path('teacher')
             ->brandName(fn (): string => __('panels.teacher.brand'))
             ->login()
+            // Q&A notices for staff; polled, since there is no websocket server on shared hosting.
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('60s')
             ->profile(EditTeacherProfile::class, isSimple: false)
             ->colors([
                 'primary' => Color::Indigo,

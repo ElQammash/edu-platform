@@ -34,6 +34,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandName(fn (): string => __('panels.admin.brand'))
             ->login()
+            // Q&A notices for staff; polled, since there is no websocket server on shared hosting.
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('60s')
             ->colors([
                 'primary' => Color::Amber,
             ])

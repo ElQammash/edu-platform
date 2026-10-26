@@ -54,6 +54,12 @@ return [
         'empty' => 'All questions are answered.',
     ],
 
+    'notifications' => [
+        'question' => ':name asked a question on ":lesson"',
+        'reply' => ':name replied on ":lesson"',
+        'accepted' => 'Your reply on ":lesson" was accepted as the answer',
+    ],
+
     'mail' => [
         'greeting' => 'Hello :name,',
         'view_answer' => 'View the answer',
