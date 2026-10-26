@@ -31,7 +31,7 @@ Schedule::command('qa:send-teacher-digest')
     ->withoutOverlapping(10)
     ->description('Email teachers their unanswered student questions');
 
-Schedule::command('queue:work--stop-when-empty --max-time=50 --tries=3 --backoff=30')
+Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3 --backoff=30')
     ->everyMinute()
     ->withoutOverlapping(5)
     ->description('Process queued notifications and emails');

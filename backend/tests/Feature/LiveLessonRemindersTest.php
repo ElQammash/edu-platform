@@ -10,6 +10,8 @@ use App\Models\Section;
 use App\Models\User;
 use App\Notifications\LiveLessonChanged;
 use App\Notifications\LiveLessonReminder;
+use Illuminate\Console\Scheduling\Event;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\SendQueuedNotifications;
 use Illuminate\Support\Facades\Notification;
@@ -146,8 +148,14 @@ class LiveLessonRemindersTest extends TestCase
 
     public function test_the_scheduler_runs_reminders_and_the_queue_worker(): void
     {
-        $this->artisan('schedule:list')
-            ->expectsOutputToContain('lessons:send-live-reminders')
-            ->expectsOutputToContain('queue:work --stop-when-empty');
+        // Read the events, not schedule:list, whose output squeezes long commands.
+        $commands = collect(app(Schedule::class)->events())->map(fn (Event $event): string => (string) $event->command)->values();
+
+        $reminders = $commands->search(fn (string $c): bool => str_contains($c, 'lessons:send-live-reminders'));
+        $worker = $commands->search(fn (string $c): bool => str_contains($c, 'queue:work --stop-when-empty'));
+        $this->assertIsInt($reminders);
+        $this->assertIsInt($worker);
+        // Reminders are queued before the worker runs, so they go out in the same minute.
+        $this->assertLessThan($worker, $reminders);
     }
 }
