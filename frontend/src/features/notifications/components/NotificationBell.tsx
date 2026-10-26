@@ -45,6 +45,10 @@ export function NotificationBell() {
         return navigate(paths.courseDetails(notification.data.course_slug))
       case 'lesson_question':
       case 'lesson_reply':
+      case 'payment_confirmed':
+        return navigate(paths.courseDetails(notification.data.course_slug))
+      case 'payment_refunded':
+        return navigate(paths.payment(notification.data.reference))
       case 'lesson_answer_accepted':
         return navigate({ pathname: paths.lesson(notification.data.lesson_id), hash: `question-${notification.data.question_id}` })
       default:
@@ -92,6 +96,15 @@ export function NotificationBell() {
         return notification.data.on_my_question
           ? t('notifications.qa.acceptedMine', { lesson: notification.data.lesson_title })
           : t('notifications.qa.acceptedYours', { lesson: notification.data.lesson_title })
+      case 'payment_confirmed':
+        return t('notifications.payments.confirmed', { course: notification.data.course_title })
+      case 'payment_refunded': {
+        const vars = {
+          course: notification.data.course_title,
+          amount: `${format.number(notification.data.refunded ?? 0)} ${t('payments.currency')}`,
+        }
+        return notification.data.full ? t('notifications.payments.refunded', vars) : t('notifications.payments.partiallyRefunded', vars)
+      }
     }
   }
 

@@ -1,3 +1,4 @@
+import type { PaymentNotificationData } from './payment'
 import type { LessonQaNotificationData } from './qa'
 
 export interface AssignmentSummary {
@@ -92,3 +93,4 @@ export type AppNotification =
       type: 'lesson_question' | 'lesson_reply' | 'lesson_answer_accepted'
       data: LessonQaNotificationData
     })
+  | (NotificationBase & { type: 'payment_confirmed' | 'payment_refunded'; data: PaymentNotificationData })
