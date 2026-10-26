@@ -45,7 +45,11 @@
       "paidOnly": "مدفوع",
       "results": "{{value}} كورس",
       "empty": "مفيش كورسات بالفلاتر دي.",
-      "clearFilters": "مسح الفلاتر"
+      "clearFilters": "مسح الفلاتر",
+      "sort": {
+        "newest": "الأحدث",
+        "rating": "الأعلى تقييمًا"
+      }
     },
     "details": {
       "about": "عن الكورس",
@@ -158,6 +162,14 @@
       "reminder1h": "كمان ساعة: حصة لايف \"{{lesson}}\" الساعة {{time}}.",
       "rescheduled": "ميعاد الحصة اللايف \"{{lesson}}\" اتغير لـ {{time}}.",
       "cancelled": "الحصة اللايف \"{{lesson}}\" اتلغت."
+    },
+    "qa": {
+      "question": "سأل {{name}} في \"{{lesson}}\": {{excerpt}}",
+      "teacherReplied": "رد المدرس على سؤالك في \"{{lesson}}\".",
+      "replyOnMine": "رد {{name}} على سؤالك في \"{{lesson}}\".",
+      "reply": "رد {{name}} في نقاش تتابعه في \"{{lesson}}\".",
+      "acceptedMine": "سؤالك في \"{{lesson}}\" له إجابة معتمدة.",
+      "acceptedYours": "تم اعتماد ردك في \"{{lesson}}\" كإجابة."
     }
   },
   "quizzes": {
@@ -336,5 +348,62 @@
       "description": "الصفحة اللي بتدور عليها مش موجودة.",
       "backHome": "الرجوع للرئيسية"
     }
+  },
+  "qa": {
+    "title": "الأسئلة والأجوبة",
+    "filters": {
+      "all": "الكل",
+      "unresolved": "بدون حل",
+      "mine": "أسئلتي"
+    },
+    "ask": "اسأل",
+    "askPlaceholder": "في حاجة مش واضحة في الدرس؟ اسأل المدرس وزمايلك…",
+    "reply": "رد",
+    "replyPlaceholder": "اكتب ردك…",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "sending": "جارٍ الإرسال…",
+    "edit": "تعديل",
+    "edited": "معدّل",
+    "delete": "حذف",
+    "confirmDelete": "حذف هذه المشاركة؟",
+    "deleted": "تم حذف هذه المشاركة.",
+    "teacher": "المدرس",
+    "resolved": "تم الحل",
+    "markResolved": "تحديد كمحلول",
+    "reopen": "إعادة فتح",
+    "accept": "اعتماد كإجابة",
+    "accepted": "الإجابة المعتمدة",
+    "loadError": "تعذر تحميل الأسئلة.",
+    "empty": {
+      "all": "لا توجد أسئلة بعد. كن أول من يسأل.",
+      "unresolved": "لا توجد أسئلة مفتوحة.",
+      "mine": "لم تسأل أي سؤال في هذا الدرس."
+    }
+  },
+  "reviews": {
+    "title": "تقييمات الطلاب",
+    "noReviews": "لا توجد تقييمات بعد.",
+    "count": "{{value}} تقييم",
+    "outOf": "من ٥",
+    "starsLabel": "{{value}} من ٥ نجوم",
+    "starBar": "{{stars}} نجوم",
+    "teacherReply": "رد {{name}}",
+    "teacherReplyFallback": "رد المدرس",
+    "edited": "معدّل",
+    "yours": "تقييمك",
+    "write": "قيّم هذا الكورس",
+    "edit": "تعديل تقييمك",
+    "ratingLabel": "تقييمك",
+    "commentPlaceholder": "إيه اللي عجبك؟ وإيه اللي ممكن يتحسن؟ (اختياري)",
+    "submit": "نشر التقييم",
+    "update": "حفظ التعديلات",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "delete": "حذف التقييم",
+    "confirmDelete": "حذف تقييمك؟",
+    "saved": "شكرًا! تم نشر تقييمك.",
+    "hidden": "تم إخفاء تقييمك بواسطة المشرفين ولا يظهر في صفحة الكورس.",
+    "sortLabel": "الترتيب"
   }
 }

@@ -47,7 +47,11 @@
       "results_one": "{{value}} course",
       "results_other": "{{value}} courses",
       "empty": "No courses match your filters.",
-      "clearFilters": "Clear filters"
+      "clearFilters": "Clear filters",
+      "sort": {
+        "newest": "Newest",
+        "rating": "Highest rated"
+      }
     },
     "details": {
       "about": "About this course",
@@ -163,6 +167,14 @@
       "reminder1h": "In 1 hour: live lesson \"{{lesson}}\" at {{time}}.",
       "rescheduled": "The live lesson \"{{lesson}}\" moved to {{time}}.",
       "cancelled": "The live lesson \"{{lesson}}\" was cancelled."
+    },
+    "qa": {
+      "question": "{{name}} asked on \"{{lesson}}\": {{excerpt}}",
+      "teacherReplied": "The teacher answered your question on \"{{lesson}}\".",
+      "replyOnMine": "{{name}} replied to your question on \"{{lesson}}\".",
+      "reply": "{{name}} replied in a thread you follow on \"{{lesson}}\".",
+      "acceptedMine": "Your question on \"{{lesson}}\" has an accepted answer.",
+      "acceptedYours": "Your reply on \"{{lesson}}\" was accepted as the answer."
     }
   },
   "quizzes": {
@@ -345,5 +357,63 @@
       "description": "The page you are looking for does not exist.",
       "backHome": "Back to home"
     }
+  },
+  "qa": {
+    "title": "Questions & answers",
+    "filters": {
+      "all": "All",
+      "unresolved": "Unresolved",
+      "mine": "My questions"
+    },
+    "ask": "Ask question",
+    "askPlaceholder": "Stuck on something in this lesson? Ask the teacher and your classmates…",
+    "reply": "Reply",
+    "replyPlaceholder": "Write a reply…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "sending": "Sending…",
+    "edit": "Edit",
+    "edited": "edited",
+    "delete": "Delete",
+    "confirmDelete": "Delete this post?",
+    "deleted": "This post was deleted.",
+    "teacher": "Teacher",
+    "resolved": "Resolved",
+    "markResolved": "Mark resolved",
+    "reopen": "Reopen",
+    "accept": "Accept as answer",
+    "accepted": "Accepted answer",
+    "loadError": "Could not load the questions.",
+    "empty": {
+      "all": "No questions yet. Be the first to ask.",
+      "unresolved": "No open questions.",
+      "mine": "You have not asked anything on this lesson."
+    }
+  },
+  "reviews": {
+    "title": "Student reviews",
+    "noReviews": "No reviews yet.",
+    "count_one": "{{value}} review",
+    "count_other": "{{value}} reviews",
+    "outOf": "out of 5",
+    "starsLabel": "{{value}} out of 5 stars",
+    "starBar": "{{stars}} stars",
+    "teacherReply": "Reply from {{name}}",
+    "teacherReplyFallback": "Reply from the teacher",
+    "edited": "edited",
+    "yours": "Your review",
+    "write": "Rate this course",
+    "edit": "Edit your review",
+    "ratingLabel": "Your rating",
+    "commentPlaceholder": "What did you like? What could be better? (optional)",
+    "submit": "Publish review",
+    "update": "Save changes",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "delete": "Delete review",
+    "confirmDelete": "Delete your review?",
+    "saved": "Thanks! Your review is published.",
+    "hidden": "Your review was hidden by the moderators and does not appear on the course page.",
+    "sortLabel": "Sort"
   }
 }

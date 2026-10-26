@@ -16,6 +16,7 @@ import { VideoPlayer } from '@/features/lessons/components/VideoPlayer'
 import { useCompleteLesson, useLesson, useRecordProgress } from '@/features/lessons/hooks'
 import { useWatchProgress } from '@/features/lessons/useWatchProgress'
 import { LiveLessonPanel } from '@/features/live/components/LiveLessonPanel'
+import { LessonQa } from '@/features/qa/components/LessonQa'
 import { paths } from '@/routes/paths'
 import type { Lesson } from '@/types/course'
 
@@ -143,6 +144,8 @@ function LessonView({ lesson }: { lesson: Lesson }) {
               )}
             </div>
           </footer>
+
+          {user && <LessonQa lessonId={lesson.id} />}
         </div>
 
         <aside className="space-y-3 lg:sticky lg:top-6 lg:max-h-[calc(100svh-3rem)] lg:self-start lg:overflow-y-auto">
