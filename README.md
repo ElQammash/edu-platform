@@ -211,8 +211,24 @@ edu-platform/
   - catalog cards show the rating, and the catalog sorts by **highest rated**; teacher profiles show the average of all their courses' reviews
 - **Moderation:** teachers reply to reviews of their courses in the panel (one reply each); admins **hide** reviews that break the rules (they disappear and stop counting in the rating) and can show them again
 
-### Roadmap
-7. Payments (Paymob), payment-gated enrollment
+### Phase 7: online payments (Paymob) ✅
+- **Buying a course:**
+  - paid courses get a **Pay** button: the student goes to Paymob's checkout (card or mobile wallet; card details never reach our server) and is enrolled as soon as the payment is confirmed;
+  - the price is locked when checkout starts; reopening checkout within the hour reuses the open one;
+  - WhatsApp stays as the option for paying cash, with the admin enrolling the student (manual)
+- **Only Paymob's server callback counts:**
+  - it is verified with Paymob's HMAC, and the amount and currency must match the stored payment, before anything changes;
+  - the browser redirect is verified the same way, then shows the result page, which waits for our records to say "paid";
+  - every gateway message is applied once, so repeated or out-of-order callbacks are harmless
+- **Refunds** are made in Paymob's dashboard; their callback updates the payment:
+  - a **partial refund** records `refunded_amount` and the status `partially_refunded`, and the student keeps the course;
+  - a **full refund** (or a void) makes it `refunded` and removes the access that payment gave (a manual enrollment stays)
+- **Missed callbacks:** `payments:reconcile` (every 10 minutes) asks Paymob about payments still pending after 15 minutes; payments pending for 24 hours expire
+- **Student:** a receipt and refund notices (in-app and email, in their language), a result page, and **My payments** in the user menu
+- **Admin:** **Payments** (filters by status, course and date; refunded and partially refunded amounts; Paymob ids and every gateway message with its payload), and a revenue widget (this month and last month after refunds, paid enrollments)
+- **Fake gateway for development:** `PAYMENT_GATEWAY=fake` shows a local test checkout with Pay and Decline buttons, which sends the same signed callback Paymob would. It **refuses to run when `APP_ENV=production`**, whatever `PAYMENT_GATEWAY` says, and missing Paymob keys stop payments with a logged error instead of falling back
+
+All seven planned phases are done.
 
 ## Getting started
 
@@ -275,10 +291,11 @@ Shared hosting allows **one cron job and no long-running processes** (no `queue:
 
 - `routes/console.php` runs, every minute and in this order:
   1. `lessons:send-live-reminders`: queues due reminders;
-  2. `qa:send-teacher-digest` (daily at 08:00 only): queues each teacher's digest of unanswered questions;
-  3. `queue:work --stop-when-empty --max-time=50 --tries=3`: sends everything queued, then exits.
+  2. `payments:reconcile` (every 10 minutes): asks Paymob about payments whose callback never arrived, and expires stale ones;
+  3. `qa:send-teacher-digest` (daily at 08:00 only): queues each teacher's digest of unanswered questions;
+  4. `queue:work --stop-when-empty --max-time=50 --tries=3`: sends everything queued, then exits.
 
-  All three use `withoutOverlapping()`, so a slow run never starts a second worker. The overlap lock uses the database cache (`CACHE_STORE=database`), so no Redis is needed.
+  All of them use `withoutOverlapping()`, so a slow run never starts a second worker. The overlap lock uses the database cache (`CACHE_STORE=database`), so no Redis is needed.
 - Failed jobs are kept for a week (`queue:prune-failed`, daily). Run `php artisan queue:failed` to see them and `php artisan queue:retry all` to retry them.
 
 Setup:
@@ -305,13 +322,26 @@ Setup:
    MAIL_FROM_NAME="Edu Platform"
    ```
 
-3. Add the **single cron job** in hPanel → Advanced → Cron Jobs, to run every minute. Use the full PHP path from hPanel if `php` is not on the cron PATH:
+3. Payments: in the Paymob dashboard, copy the keys into `.env` with `PAYMENT_GATEWAY=paymob`. Use the test keys and Paymob's test cards first, then the live keys. Payments refuse to start, with an error in `storage/logs/laravel.log`, if a key is missing.
+
+   ```dotenv
+   PAYMENT_GATEWAY=paymob
+   PAYMOB_SECRET_KEY=...
+   PAYMOB_PUBLIC_KEY=...
+   PAYMOB_HMAC_SECRET=...
+   PAYMOB_INTEGRATION_IDS=1234567,7654321   # card, mobile wallet
+   PAYMOB_API_KEY=...                       # for payments:reconcile
+   ```
+
+   Each checkout tells Paymob where to send the callback (`https://api.your-domain.com/api/v1/payments/paymob/callback`) and where to send the student (`https://api.your-domain.com/payments/paymob/return`), built from `APP_URL`. Set the same two URLs on the integrations in the dashboard, so refunds made there reach the app too. The callback has to be reachable over https.
+
+4. Add the **single cron job** in hPanel → Advanced → Cron Jobs, to run every minute. Use the full PHP path from hPanel if `php` is not on the cron PATH:
 
    ```
    * * * * * cd /home/USER/domains/your-domain.com/backend && php artisan schedule:run >> /dev/null 2>&1
    ```
 
-4. Check it: `php artisan schedule:list` shows the tasks, and after a minute the `jobs` table should be empty.
+5. Check it: `php artisan schedule:list` shows the tasks, and after a minute the `jobs` table should be empty.
 
 > **Optional, for a future VPS:** with long-running processes allowed, you can run a permanent worker under supervisor (`php artisan queue:work --sleep=3 --tries=3`) and remove the `queue:work` entry from `routes/console.php`. Keep the cron entry for the reminders.
 
@@ -331,7 +361,7 @@ Setup:
 | Course | Teacher | Language | Price | Enrolled demo students |
 | --- | --- | --- | --- | --- |
 | الفيزياء للصف الثالث الثانوي (`physics-secondary-3`) | Ahmed | Arabic | Free | student1 (40% done), student3, student4 and student5 (40% each) |
-| Physics Olympiad Preparation | Ahmed | English | 750 EGP | student3 (manual) |
+| Physics Olympiad Preparation | Ahmed | English | 750 EGP | student3 (manual), student4 (paid online, 250 EGP refunded) |
 | الرياضيات البحتة - التفاضل والتكامل | Mona | Arabic | 500 EGP | student2 (manual) |
 | Algebra Foundations | Mona | English | Free | student1 |
 | الهندسة الفراغية (draft) | Mona | Arabic | 300 EGP | not visible to students |
@@ -384,6 +414,18 @@ After seeding, run `php artisan schedule:run` once and log in as student1. The b
 
 teacher1 has 3 unanswered questions: run `php artisan qa:send-teacher-digest` and then `php artisan schedule:run`, and the digest email is in `storage/logs/laravel.log`.
 
+### Demo payments
+
+The demo uses the fake gateway (`PAYMENT_GATEWAY=fake`, the default in `.env.example`).
+
+| Student | Course | Payment |
+| --- | --- | --- |
+| student4 | Physics Olympiad (750 EGP) | paid by card, then **250 EGP refunded** (partially refunded): still enrolled |
+| student5 | Calculus (500 EGP) | paid, then **fully refunded**: not enrolled |
+| student2 | Physics Olympiad | **declined** card |
+
+Try it: as student1, open *Physics Olympiad Preparation* and click **Pay**. The test checkout's **Pay** enrolls you, and **Simulate a declined card** shows the failure page. Run `php artisan schedule:run` to send the receipt (in `storage/logs/laravel.log`). Admins see everything under **Payments** at `/admin`.
+
 ## API (v1)
 
 All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-Language: ar` or `en`.
@@ -430,6 +472,12 @@ All endpoints are under `/api/v1`. Send `Accept: application/json`, and `Accept-
 | POST | `/api/v1/comments/{id}/accept` | asker, teacher, admin | Accept a reply as the answer (resolves the question) |
 | GET | `/api/v1/courses/{slug}/reviews` | — | Visible reviews with the average and a star breakdown |
 | GET / PUT / DELETE | `/api/v1/courses/{slug}/review` | student | My review, and whether I can write one; write or rewrite it (enrolled, 30% done); delete it |
+| POST | `/api/v1/courses/{slug}/checkout` | student, not enrolled | Start (or reuse) a checkout for a paid course; returns `checkout_url`. 5 a minute; 502 if the gateway is down |
+| GET | `/api/v1/payments/{reference}` | the payment's student, admin | A payment's status (the result page polls it) |
+| GET | `/api/v1/me/payments` | student | My payments, newest first |
+| POST | `/api/v1/payments/paymob/callback` | Paymob (HMAC) | Paymob's Transaction Processed callback: payments, refunds, voids |
+| GET | `/payments/paymob/return` | browser (HMAC) | Paymob's redirect after checkout; goes on to the result page |
+| GET | `/payments/fake-checkout/{reference}` | local only | The fake gateway's test checkout (refuses to run in production) |
 
 ## Git conventions
 
