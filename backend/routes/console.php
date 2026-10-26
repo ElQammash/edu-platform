@@ -25,6 +25,12 @@ Schedule::command('lessons:send-live-reminders')
     ->withoutOverlapping(5)
     ->description('Queue 24h and 1h live lesson reminders');
 
+// Payments whose Paymob callback never came; receipts it queues go out below.
+Schedule::command('payments:reconcile')
+    ->everyTenMinutes()
+    ->withoutOverlapping(10)
+    ->description('Ask Paymob about pending payments and expire stale ones');
+
 // Before the worker below, so the digests go out in the same run.
 Schedule::command('qa:send-teacher-digest')
     ->dailyAt('08:00')
