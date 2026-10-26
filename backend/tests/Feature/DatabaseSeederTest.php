@@ -3,12 +3,14 @@
 namespace Tests\Feature;
 
 use App\Enums\LessonType;
+use App\Enums\PaymentState;
 use App\Models\Assignment;
 use App\Models\Attendance;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonComment;
+use App\Models\Payment;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\Review;
@@ -36,7 +38,7 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(8, User::count());
         $this->assertSame(5, Course::count());
         $this->assertSame(4, Course::published()->count());
-        $this->assertSame(7, Enrollment::count());
+        $this->assertSame(8, Enrollment::count());
         $this->assertSame(4, Assignment::count());
         $this->assertSame(4, Submission::count());
         $this->assertSame(3, Submission::pending()->count());
@@ -62,5 +64,14 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame('4.50', $physics->rating_avg);
         $this->assertSame(2, $physics->reviews_count);
         $this->assertSame('4.33', $physics->teacher->teacherProfile?->rating);
+
+        // Payments: a partial refund (still enrolled), a full refund (not enrolled), a declined card.
+        $this->assertSame(3, Payment::count());
+        $partial = Payment::where('status', PaymentState::PartiallyRefunded)->sole();
+        $this->assertSame('250.00', $partial->refunded_amount);
+        $this->assertTrue($partial->student->isEnrolledIn($partial->course));
+        $refunded = Payment::where('status', PaymentState::Refunded)->sole();
+        $this->assertFalse($refunded->student->isEnrolledIn($refunded->course));
+        $this->assertSame(1, Payment::where('status', PaymentState::Failed)->count());
     }
 }

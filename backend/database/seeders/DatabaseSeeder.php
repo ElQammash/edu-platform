@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
                 DemoQuizSeeder::class,
                 DemoLiveLessonSeeder::class,
                 DemoQaAndReviewSeeder::class,
+                DemoPaymentSeeder::class,
             ]);
         }
     }
