@@ -1,4 +1,4 @@
-import { BookOpen, GraduationCap } from 'lucide-react'
+import { BookOpen, GraduationCap, Star } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -43,12 +43,21 @@ export function CourseCard({ course, progress }: { course: Course; progress?: nu
           {course.teacher && (
             <p className="text-sm text-muted-foreground">{t('courses.card.by', { name: course.teacher.name })}</p>
           )}
-          {course.lessons_count !== undefined && (
-            <p className="mt-auto flex items-center gap-1 text-xs text-muted-foreground">
-              <BookOpen className="size-3.5" />
-              {t('courses.card.lessons', { count: course.lessons_count, value: format.number(course.lessons_count) })}
-            </p>
-          )}
+          <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            {course.rating.count > 0 && (
+              <span className="flex items-center gap-1">
+                <Star className="size-3.5 fill-amber-500 text-amber-500" />
+                <span className="font-semibold text-foreground">{format.number(course.rating.average)}</span>
+                <span>({format.number(course.rating.count)})</span>
+              </span>
+            )}
+            {course.lessons_count !== undefined && (
+              <span className="flex items-center gap-1">
+                <BookOpen className="size-3.5" />
+                {t('courses.card.lessons', { count: course.lessons_count, value: format.number(course.lessons_count) })}
+              </span>
+            )}
+          </div>
         </CardContent>
 
         <CardFooter className="border-t p-4">

@@ -27,6 +27,7 @@ function filtersFrom(params: URLSearchParams): CourseFilters {
     language: pick('language', ['ar', 'en'] as const),
     type: pick('type', ['recorded', 'live', 'hybrid'] as const),
     price: pick('price', ['free', 'paid'] as const),
+    sort: pick('sort', ['rating'] as const),
     page: Number(params.get('page')) > 1 ? Number(params.get('page')) : undefined,
   }
 }
@@ -117,6 +118,16 @@ export default function CatalogPage() {
             <SelectItem value={ALL}>{t('courses.catalog.allPrices')}</SelectItem>
             <SelectItem value="free">{t('courses.catalog.freeOnly')}</SelectItem>
             <SelectItem value="paid">{t('courses.catalog.paidOnly')}</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={filters.sort ?? 'newest'} onValueChange={(value) => update({ sort: value === 'newest' ? undefined : value })}>
+          <SelectTrigger className="w-40" aria-label={t('reviews.sortLabel')}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">{t('courses.catalog.sort.newest')}</SelectItem>
+            <SelectItem value="rating">{t('courses.catalog.sort.rating')}</SelectItem>
           </SelectContent>
         </Select>
 
