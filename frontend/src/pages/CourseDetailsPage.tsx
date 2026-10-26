@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BookOpen, Clock, GraduationCap, Languages, Users } from 'lucide-react'
+import { BookOpen, Clock, GraduationCap, Languages, Star, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { ErrorState } from '@/components/ErrorState'
@@ -12,6 +12,7 @@ import { useAuth } from '@/features/auth/hooks'
 import { CourseCurriculum } from '@/features/courses/components/CourseCurriculum'
 import { EnrollPanel } from '@/features/courses/components/EnrollPanel'
 import { useCourse } from '@/features/courses/hooks'
+import { CourseReviews } from '@/features/reviews/components/CourseReviews'
 import { useFormatters } from '@/hooks/useFormatters'
 import { paths } from '@/routes/paths'
 
@@ -52,6 +53,15 @@ export default function CourseDetailsPage() {
               {course.excerpt}
             </p>
             <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+              {course.rating.count > 0 && (
+                <li>
+                  <a href="#reviews" className="flex items-center gap-1.5 hover:text-foreground">
+                    <Star className="size-4 fill-amber-500 text-amber-500" />
+                    <span className="font-semibold text-foreground">{format.number(course.rating.average)}</span>
+                    {t('reviews.count', { count: course.rating.count, value: format.number(course.rating.count) })}
+                  </a>
+                </li>
+              )}
               <li className="flex items-center gap-1.5">
                 <BookOpen className="size-4" />
                 {t('courses.details.lessons', { count: course.lessons_count ?? 0, value: format.number(course.lessons_count ?? 0) })}
@@ -100,6 +110,8 @@ export default function CourseDetailsPage() {
               </Link>
             </section>
           )}
+
+          <CourseReviews course={course} />
         </div>
 
         <aside className="lg:sticky lg:top-6 lg:self-start">

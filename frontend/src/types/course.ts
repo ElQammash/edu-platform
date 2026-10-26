@@ -1,5 +1,6 @@
 import type { AssignmentSummary } from './assignment'
 import type { QuizSummary } from './quiz'
+import type { RatingSummary } from './review'
 
 export type CourseLanguage = 'ar' | 'en'
 export type CourseType = 'recorded' | 'live' | 'hybrid'
@@ -63,6 +64,7 @@ export interface Course {
   language: CourseLanguage
   type: CourseType
   published_at: string | null
+  rating: RatingSummary
   teacher?: TeacherSummary
   lessons_count?: number
   students_count?: number
@@ -107,6 +109,7 @@ export interface CourseFilters {
   type?: CourseType
   price?: 'free' | 'paid'
   teacher?: number
+  sort?: 'newest' | 'rating'
   page?: number
 }
 
