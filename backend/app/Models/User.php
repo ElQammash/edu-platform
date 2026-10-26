@@ -128,6 +128,14 @@ class User extends Authenticatable implements FilamentUser, HasLocalePreference
         return $this->hasMany(Attendance::class, 'student_id');
     }
 
+    /**
+     * @return HasMany<Payment, $this>
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'student_id');
+    }
+
     public function isEnrolledIn(Course $course): bool
     {
         return $this->enrollments()->where('course_id', $course->id)->exists();

@@ -32,5 +32,15 @@ return [
     'payment_status' => [
         'free' => 'Free',
         'manual' => 'Paid (manual)',
+        'paid' => 'Paid online',
+    ],
+
+    'payment_state' => [
+        'pending' => 'Pending',
+        'paid' => 'Paid',
+        'failed' => 'Failed',
+        'expired' => 'Expired',
+        'partially_refunded' => 'Partially refunded',
+        'refunded' => 'Refunded',
     ],
 ];

@@ -6,8 +6,8 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
 /**
- * How an enrollment was paid for. Paymob (phase 7) adds online payments;
- * until then paid courses are enrolled manually by the admin.
+ * How an enrollment was paid for: free, outside the platform (enrolled by
+ * the admin) or online through the payment gateway.
  */
 enum PaymentStatus: string implements HasColor, HasLabel
 {
@@ -16,6 +16,9 @@ enum PaymentStatus: string implements HasColor, HasLabel
 
     /** Paid outside the platform (cash, Vodafone Cash...) and enrolled by the admin. */
     case Manual = 'manual';
+
+    /** Paid online (Paymob); the enrollment points at its payment. */
+    case Paid = 'paid';
 
     public function label(): string
     {
@@ -31,7 +34,7 @@ enum PaymentStatus: string implements HasColor, HasLabel
     {
         return match ($this) {
             self::Free => 'gray',
-            self::Manual => 'success',
+            self::Manual, self::Paid => 'success',
         };
     }
 }

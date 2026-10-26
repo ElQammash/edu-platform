@@ -32,5 +32,15 @@ return [
     'payment_status' => [
         'free' => 'مجاني',
         'manual' => 'مدفوع (يدوي)',
+        'paid' => 'مدفوع أونلاين',
+    ],
+
+    'payment_state' => [
+        'pending' => 'قيد الانتظار',
+        'paid' => 'مدفوع',
+        'failed' => 'فشل',
+        'expired' => 'منتهي',
+        'partially_refunded' => 'مسترد جزئياً',
+        'refunded' => 'مسترد',
     ],
 ];

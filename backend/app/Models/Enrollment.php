@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $student_id
  * @property int $course_id
  * @property PaymentStatus $payment_status
+ * @property int|null $payment_id
  * @property int|null $enrolled_by
  * @property CarbonImmutable $enrolled_at
  * @property int $progress_percent
@@ -22,8 +23,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $student
  * @property-read Course $course
+ * @property-read Payment|null $payment
  */
-#[Fillable(['student_id', 'course_id', 'payment_status', 'enrolled_by', 'enrolled_at', 'progress_percent'])]
+#[Fillable(['student_id', 'course_id', 'payment_status', 'payment_id', 'enrolled_by', 'enrolled_at', 'progress_percent'])]
 class Enrollment extends Model
 {
     /** @use HasFactory<EnrollmentFactory> */
@@ -57,6 +59,16 @@ class Enrollment extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * The online payment behind a paid enrollment.
+     *
+     * @return BelongsTo<Payment, $this>
+     */
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class);
     }
 
     /**
